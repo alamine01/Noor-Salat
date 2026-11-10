@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import { Screen } from '../components/Screen';
 import { PageHeader } from '../components/PageHeader';
-import { T } from '../components/Text';
+import { T, Text, TextInput } from '../components/Text';
 import { Icon } from '../components/Icon';
 import { Card, Row, goBack } from '../components/ui';
 import { C, F } from '../lib/theme';

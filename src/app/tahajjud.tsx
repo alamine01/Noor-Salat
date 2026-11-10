@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Easing, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, Platform, Pressable, StyleSheet, View } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { scheduleSafe } from '../lib/fajr-helpers';
 import { alarmKitAuthorized, alarmKitAvailable, requestAlarmKit } from '../lib/ios';
@@ -7,7 +7,7 @@ import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageHeader } from '../components/PageHeader';
-import { Label, T } from '../components/Text';
+import { Label, T, Text } from '../components/Text';
 import { Icon } from '../components/Icon';
 import { Backdrop, ND, PrimaryButton, Rise, useBreath, useLoop } from '../components/ui';
 import { C, F } from '../lib/theme';

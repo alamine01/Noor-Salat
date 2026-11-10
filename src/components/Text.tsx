@@ -1,5 +1,15 @@
-import { Text, TextProps } from 'react-native';
+import { Text as RNText, TextInput as RNTextInput, TextInputProps, TextProps } from 'react-native';
 import { C, F } from '../lib/theme';
+
+/**
+ * Limite de l'agrandissement des polices (réglage « Texte plus grand » du téléphone).
+ * Au-delà, les mises en page débordent. 1,2 = jusqu'à +20 %, ce qui reste confortable à lire.
+ */
+export const MAX_FONT_SCALE = 1.2;
+
+/** Remplace le Text de React Native partout dans l'appli : même chose, avec la limite d'agrandissement. */
+export const Text = (p: TextProps) => <RNText maxFontSizeMultiplier={MAX_FONT_SCALE} {...p} />;
+export const TextInput = (p: TextInputProps) => <RNTextInput maxFontSizeMultiplier={MAX_FONT_SCALE} {...p} />;
 
 /** Texte courant (Inter). */
 export const T = ({ style, ...p }: TextProps) => <Text {...p} style={[{ fontFamily: F.regular, color: C.text, fontSize: 15 }, style]} />;

@@ -131,11 +131,15 @@ export default function Parametres() {
     <Screen nav={false}>
       <PageHeader title="Réglages" />
 
-      <Card>
-        <Row last title="Mon compte et sauvegarde" sub="Retrouver ta série sur un nouveau téléphone, classement" onPress={() => router.push('/compte')}
-          icon={<View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: 'rgba(226,192,141,0.14)', alignItems: 'center', justifyContent: 'center' }}><Icon name="shieldCheck" size={16} color={C.gold} /></View>}
-          right={<Icon name="chevron" size={16} color={C.faint} />} />
-      </Card>
+      <Pressable onPress={() => { haptic.tap(); router.push('/compte'); }} accessibilityRole="button"
+        style={({ pressed }) => [st.account, { opacity: pressed ? 0.8 : 1 }]}>
+        <View style={st.accountIcon}><Icon name="shieldCheck" size={20} color={C.goldBright} /></View>
+        <View style={{ flex: 1, minWidth: 0, gap: 3 }}>
+          <T style={{ fontSize: 15, fontFamily: F.medium }}>Mon compte et sauvegarde</T>
+          <T style={{ fontSize: 12, lineHeight: 17, color: C.dim }}>Retrouver ta série sur un nouveau téléphone, classement</T>
+        </View>
+        <View style={{ flexShrink: 0 }}><Icon name="chevron" size={16} color={C.faint} /></View>
+      </Pressable>
 
       <Section>Profil</Section>
       <Card style={{ paddingVertical: 16, gap: 12 }}>
@@ -184,8 +188,8 @@ export default function Parametres() {
           </View>
         ))}
       </Card>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: -8, marginHorizontal: 4 }}>
-        <T style={{ fontSize: 12, color: C.dim }}>De −{ADJUST_LIMIT} à +{ADJUST_LIMIT} min, comme ta mosquée</T>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', columnGap: 12, rowGap: 4, marginTop: -8, marginHorizontal: 4 }}>
+        <T style={{ flexShrink: 1, fontSize: 12, color: C.dim }}>De −{ADJUST_LIMIT} à +{ADJUST_LIMIT} min, comme ta mosquée</T>
         <Pressable onPress={reset} hitSlop={10} accessibilityRole="button"><T style={{ fontSize: 13, color: C.gold, fontFamily: F.medium }}>Remettre à 0</T></Pressable>
       </View>
 
@@ -276,6 +280,8 @@ function Step({ icon, label, disabled, onPress }: { icon: 'minus' | 'plus'; labe
 }
 
 const st = StyleSheet.create({
+  account: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 16, paddingHorizontal: 16, borderRadius: 22, borderWidth: 1, borderColor: 'rgba(226,192,141,0.25)', backgroundColor: 'rgba(226,192,141,0.06)' },
+  accountIcon: { width: 42, height: 42, borderRadius: 21, flexShrink: 0, backgroundColor: 'rgba(226,192,141,0.14)', alignItems: 'center', justifyContent: 'center' },
   adj: { height: 58, flexDirection: 'row', alignItems: 'center', gap: 10 },
   line: { borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.06)' },
   step: { width: 36, height: 36, borderRadius: 18, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', backgroundColor: 'rgba(255,255,255,0.04)', alignItems: 'center', justifyContent: 'center' },

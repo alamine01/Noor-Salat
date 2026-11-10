@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Animated, Easing, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Screen } from '../components/Screen';
-import { Ar, Label, Serif, T } from '../components/Text';
+import { Ar, Label, Serif, T, Text } from '../components/Text';
 import { Icon, IconName } from '../components/Icon';
 import { Halo, IconButton, ND, Ring, Rise } from '../components/ui';
 import { C, F } from '../lib/theme';
@@ -51,7 +51,13 @@ export default function Home() {
     setDispDay(cp ? currentDay(cp) : null);
     const blockOn = await getBlockEnabled();
     if (canReallyBlock) setMissing(blockOn ? missingPermissions() : 0);
-    else if (isIOS && blockOn && screenTimeStatus() !== 'unavailable') setMissing((screenTimeStatus() === 'approved' ? 0 : 1) + (selectionCount() ? 0 : 1));
+    else if (isIOS && blockOn && screenTimeStatus() !== 'unavailable') {
+      // iOS confirme l'autorisation Temps d'écran quelques secondes après le lancement : on n'affiche
+      // le bandeau que s'il manque encore quelque chose après ce délai.
+      const check = () => (screenTimeStatus() === 'approved' ? 0 : 1) + (selectionCount() ? 0 : 1);
+      if (check() === 0) setMissing(0);
+      else setTimeout(() => setMissing(check()), 4000);
+    }
     scheduleIfStale(d.times).catch(() => {});
     if (canCheckFilter) checkFilter().catch(() => {});
     settleEngagement().catch(() => {});
@@ -64,6 +70,7 @@ export default function Home() {
     return () => clearInterval(id);
   }, []);
 
+  const tools = femme ? [...TOOLS.slice(0, 5), { label: 'Dispense', href: '/dispense', icon: 'moon' as IconName }, TOOLS[5]] : TOOLS;
   const next = day ? nextPrayer(day.times, now) : null;
   const prev = day ? previousPrayerTime(day.times, now) : null;
   const progress = next && prev ? (now.getTime() - prev.getTime()) / (next.at.getTime() - prev.getTime()) : 0;
@@ -74,11 +81,11 @@ export default function Home() {
     <Screen stars gap={0}>
       <Rise style={st.header}>
         <View style={{ flex: 1, gap: 6 }}>
-          <T style={{ fontSize: 12, color: C.dim }}>{dateCourte(now)}{day?.hijri ? ` · ${day.hijri}` : ''}</T>
-          <Serif style={{ fontSize: 32, lineHeight: 36 }}>Assalamu alaykum</Serif>
+          <T numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8} style={{ fontSize: 12, color: C.dim }}>{dateCourte(now)}{day?.hijri ? ` · ${day.hijri}` : ''}</T>
+          <Serif numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6} style={{ fontSize: 32, lineHeight: 36 }}>Assalamu alaykum</Serif>
           <Pressable onPress={() => router.push('/lieu')} accessibilityRole="button" accessibilityLabel="Changer de lieu" style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
             <Icon name="pin" size={14} color={C.gold} stroke={1.8} />
-            <T style={{ fontSize: 12, color: C.dim }}>{place}{day?.source === 'cache' ? ' · hors-ligne' : ''}</T>
+            <T numberOfLines={1} style={{ flexShrink: 1, fontSize: 12, color: C.dim }}>{place}{day?.source === 'cache' ? ' · hors-ligne' : ''}</T>
           </Pressable>
         </View>
         <View style={{ flexDirection: 'row', gap: 8 }}>
@@ -145,25 +152,31 @@ export default function Home() {
         </Pressable>
       </Rise>
 
-      <Rise delay={850} style={{ flexDirection: 'row', marginTop: 20, marginHorizontal: -6 }}>
-        {(femme ? [...TOOLS.slice(0, 5), { label: 'Dispense', href: '/dispense', icon: 'moon' as IconName }, TOOLS[5]] : TOOLS).map((t) => (
-          <Pressable key={t.label} onPress={() => { haptic.tap(); router.push(t.href as never); }} accessibilityRole="button" accessibilityLabel={t.label}
-            style={({ pressed }) => [{ flex: 1, alignItems: 'center', gap: 7, opacity: pressed ? 0.7 : 1 }]}>
-            <View style={st.tool}><Icon name={t.icon} size={21} color={C.gold} stroke={1.6} /></View>
-            <T style={{ fontSize: 11, color: C.soft }}>{t.label}</T>
-          </Pressable>
-        ))}
+      <Rise delay={850} style={{ marginTop: 20, marginHorizontal: -20 }}>
+        {/* Raccourcis : sur une ligne ; s'ils sont plus de 6, la rangée défile au lieu de tout écraser. */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} scrollEnabled={tools.length > 6}
+          contentContainerStyle={{ paddingHorizontal: 14, flexGrow: 1, justifyContent: 'space-between' }}>
+          {tools.map((t) => (
+            <Pressable key={t.label} onPress={() => { haptic.tap(); router.push(t.href as never); }} accessibilityRole="button" accessibilityLabel={t.label}
+              style={({ pressed }) => [{ width: tools.length > 6 ? 66 : undefined, flex: tools.length > 6 ? undefined : 1, alignItems: 'center', gap: 7, opacity: pressed ? 0.7 : 1 }]}>
+              <View style={st.tool}><Icon name={t.icon} size={21} color={C.gold} stroke={1.6} /></View>
+              <T numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8} style={{ fontSize: 11, color: C.soft }}>{t.label}</T>
+            </Pressable>
+          ))}
+        </ScrollView>
       </Rise>
 
       {askGender && (
-        <Rise delay={880} style={[st.warn, { marginTop: 22, flexWrap: 'wrap' }]}>
-          <T style={{ flex: 1, minWidth: 160, fontSize: 13, color: C.soft }}>Pour adapter l’appli, tu es…</T>
-          {([['homme', 'Un frère'], ['femme', 'Une sœur']] as const).map(([k, label]) => (
-            <Pressable key={k} onPress={async () => { haptic.tap(); await setGender(k); refresh(); }} accessibilityRole="button"
-              style={{ height: 40, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(226,192,141,0.4)', justifyContent: 'center' }}>
-              <T style={{ fontSize: 13, color: C.goldBright }}>{label}</T>
-            </Pressable>
-          ))}
+        <Rise delay={880} style={st.ask}>
+          <T style={{ fontSize: 14, color: C.soft }}>Pour adapter l’appli, tu es…</T>
+          <View style={{ flexDirection: 'row', gap: 10 }}>
+            {([['homme', 'Un frère'], ['femme', 'Une sœur']] as const).map(([k, label]) => (
+              <Pressable key={k} onPress={async () => { haptic.tap(); await setGender(k); refresh(); }} accessibilityRole="button"
+                style={({ pressed }) => [st.askBtn, { opacity: pressed ? 0.7 : 1 }]}>
+                <T style={{ fontSize: 15, color: C.goldBright }}>{label}</T>
+              </Pressable>
+            ))}
+          </View>
         </Rise>
       )}
 
@@ -221,5 +234,7 @@ const st = StyleSheet.create({
   statNum: { fontSize: 22, fontFamily: F.light, fontVariant: ['tabular-nums'] },
   statTxt: { fontSize: 12, color: C.dim },
   tool: { width: 48, height: 48, borderRadius: 16, backgroundColor: 'rgba(255,255,255,0.04)', borderWidth: 1, borderColor: C.line, alignItems: 'center', justifyContent: 'center' },
+  ask: { marginTop: 22, gap: 12, padding: 16, borderRadius: 20, borderWidth: 1, borderColor: 'rgba(226,192,141,0.25)', backgroundColor: 'rgba(226,192,141,0.05)' },
+  askBtn: { flex: 1, height: 48, borderRadius: 14, borderWidth: 1, borderColor: 'rgba(226,192,141,0.4)', alignItems: 'center', justifyContent: 'center' },
   warn: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 16, borderRadius: 18, borderWidth: 1, borderColor: 'rgba(232,168,124,0.3)', backgroundColor: 'rgba(232,168,124,0.06)' },
 });

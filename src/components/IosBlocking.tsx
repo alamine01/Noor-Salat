@@ -32,7 +32,13 @@ export function IosBlocking({ block, onToggleBlock, onChanged }: { block: boolea
   const ak = alarmKitAvailable();
 
   const refresh = useCallback(() => { setStatus(screenTimeStatus()); setCount(selectionCount()); }, []);
-  useEffect(() => { alarmKitAuthorized().then(setAlarm); loadSelection().then(refresh); }, [refresh]);
+  useEffect(() => {
+    alarmKitAuthorized().then(setAlarm);
+    loadSelection().then(refresh);
+    // iOS confirme Temps d'écran avec un léger retard au lancement : on relit l'état quelques fois.
+    const ids = [400, 1500, 3500].map((ms) => setTimeout(refresh, ms));
+    return () => ids.forEach(clearTimeout);
+  }, [refresh]);
   useEffect(() => {
     const sub = AppState.addEventListener('change', (s) => s === 'active' && refresh());
     return () => sub.remove();

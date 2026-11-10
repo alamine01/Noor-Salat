@@ -13,8 +13,8 @@ export function PageHeader({ title, subtitle, right, back = true, onBack }: {
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 6 }}>
         {back && <IconButton icon="back" label="Retour" onPress={onBack ?? goBack} />}
         <View style={{ flex: 1 }}>
-          {subtitle ? <T style={{ fontSize: 12, color: C.dim }}>{subtitle}</T> : null}
-          <Serif style={{ fontSize: 32, lineHeight: 36 }}>{title}</Serif>
+          {subtitle ? <T numberOfLines={2} style={{ fontSize: 12, color: C.dim }}>{subtitle}</T> : null}
+          <Serif numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.7} style={{ fontSize: 32, lineHeight: 36 }}>{title}</Serif>
         </View>
         {right}
       </View>

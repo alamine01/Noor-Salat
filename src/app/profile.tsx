@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Animated, Easing, Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, Modal, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import QRCode from 'react-native-qrcode-svg';
 import { Magnetometer } from 'expo-sensors';
 import Svg, { Circle, Defs, G, Line, LinearGradient, Path, Rect, Stop, Text as SvgText } from 'react-native-svg';
 import { Screen } from '../components/Screen';
-import { T } from '../components/Text';
+import { T, Text } from '../components/Text';
 import { Icon } from '../components/Icon';
 import { GhostButton, Halo, IconButton, ND, PrimaryButton, Rise, Segmented, goBack, useLoop } from '../components/ui';
 import { C, F } from '../lib/theme';

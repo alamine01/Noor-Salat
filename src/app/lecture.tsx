@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { FlatList, Text, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 
 type ViewToken<T> = { item: T; index?: number | null };
 import { useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageHeader } from '../components/PageHeader';
-import { T } from '../components/Text';
+import { T, Text } from '../components/Text';
 import { Backdrop, Toggle } from '../components/ui';
 import { C, F } from '../lib/theme';
 import { setReading } from '../lib/store';

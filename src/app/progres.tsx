@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, StyleSheet, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Screen } from '../components/Screen';
 import { PageHeader } from '../components/PageHeader';
-import { T } from '../components/Text';
+import { T, Text } from '../components/Text';
 import { Icon } from '../components/Icon';
 import { IconButton, ND, Ring, Rise } from '../components/ui';
 import { C, F } from '../lib/theme';

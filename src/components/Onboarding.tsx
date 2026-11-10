@@ -1,5 +1,5 @@
 import { ComponentType, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
-import { Animated, AppState, Easing, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Animated, AppState, Easing, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Defs, G, Path, RadialGradient, Stop } from 'react-native-svg';
@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Gender } from '../lib/dispense';
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
-import { Ar, T } from './Text';
+import { Ar, T, Text, TextInput } from './Text';
 import { Icon } from './Icon';
 import { Backdrop, HoldButton, ND, Ripples, Rise, useBreath, useLoop } from './ui';
 import { C, F } from '../lib/theme';
@@ -407,9 +407,11 @@ function Plan({ who, prayers, obst, goals, onNext }: { who: string; prayers: num
           <T style={{ fontSize: 12, color: C.soft }}>Aujourd'hui</T>
           <Text style={{ fontFamily: F.serif, fontSize: 44, lineHeight: 48, color: C.text }}>{prayers}<Text style={{ fontSize: 20, color: C.faint }}>/5</Text></Text>
         </View>
-        <Svg width={110} height={40} viewBox="0 0 120 40"><Path d="M2 34 C 30 32, 50 26, 70 18 S 105 5, 118 4" fill="none" stroke={C.goldBright} strokeWidth={2.5} strokeLinecap="round" /></Svg>
+        <View style={{ flex: 1, minWidth: 30, height: 40, marginHorizontal: 8 }}>
+          <Svg width="100%" height={40} viewBox="0 0 120 40" preserveAspectRatio="none"><Path d="M2 34 C 30 32, 50 26, 70 18 S 105 5, 118 4" fill="none" stroke={C.goldBright} strokeWidth={2.5} strokeLinecap="round" /></Svg>
+        </View>
         <View style={{ alignItems: 'flex-end' }}>
-          <T style={{ fontSize: 12, color: C.soft }}>Dans 30 jours</T>
+          <T numberOfLines={1} style={{ fontSize: 12, color: C.soft }}>Dans 30 jours</T>
           <Text style={{ fontFamily: F.serif, fontSize: 44, lineHeight: 48, color: C.goldBright }}>5<Text style={{ fontSize: 20, color: C.faint }}>/5</Text></Text>
         </View>
       </Rise>

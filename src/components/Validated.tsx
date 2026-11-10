@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ar, T } from './Text';
+import { Ar, T, Text } from './Text';
 import { Icon } from './Icon';
 import { Backdrop, Halo, ND, PrimaryButton, Rise } from './ui';
 import { C, F } from '../lib/theme';

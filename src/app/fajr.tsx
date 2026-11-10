@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, Pressable, StyleSheet, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,7 +7,7 @@ import { ScrollView } from 'react-native';
 import { createAudioPlayer, AudioPlayer } from 'expo-audio';
 import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
 import { PageHeader, Section } from '../components/PageHeader';
-import { T, Label } from '../components/Text';
+import { T, Label, Text } from '../components/Text';
 import { Icon } from '../components/Icon';
 import { Card, PrimaryButton, Row, Toggle, useBreath } from '../components/ui';
 import { C, F } from '../lib/theme';
@@ -85,9 +85,9 @@ export default function Fajr() {
 
           <View style={{ alignItems: 'center', opacity: s?.enabled ? 1 : 0.4, marginTop: 6 }}>
             <Label>Le réveil sonne à</Label>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20, marginTop: 8 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 8, alignSelf: 'stretch', justifyContent: 'center' }}>
               <Pressable style={st.step} onPress={() => { haptic.tap(); s && update({ offsetMin: Math.max(-30, s.offsetMin - 5) }); }} accessibilityRole="button" accessibilityLabel="5 minutes plus tôt"><Icon name="minus" size={20} color={C.text} /></Pressable>
-              <Text style={{ fontFamily: F.thin, fontSize: 80, lineHeight: 88, color: C.text, letterSpacing: -1, fontVariant: ['tabular-nums'] }}>{ring ? hhmm(ring) : '--:--'}</Text>
+              <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.5} style={{ flexShrink: 1, textAlign: 'center', fontFamily: F.thin, fontSize: 80, lineHeight: 88, color: C.text, letterSpacing: -1, fontVariant: ['tabular-nums'] }}>{ring ? hhmm(ring) : '--:--'}</Text>
               <Pressable style={st.step} onPress={() => { haptic.tap(); s && update({ offsetMin: Math.min(15, s.offsetMin + 5) }); }} accessibilityRole="button" accessibilityLabel="5 minutes plus tard"><Icon name="plus" size={20} color={C.text} /></Pressable>
             </View>
             <T style={{ fontSize: 13, color: C.soft, marginTop: 6 }}>

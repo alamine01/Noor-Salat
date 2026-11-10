@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { Screen } from '../components/Screen';
 import { PageHeader, Section } from '../components/PageHeader';
-import { Label, T } from '../components/Text';
+import { Label, T, TextInput } from '../components/Text';
 import { Icon } from '../components/Icon';
 import { Card, HoldButton, PrimaryButton, Row, Segmented, StatusDot, Toggle } from '../components/ui';
 import { C, F } from '../lib/theme';

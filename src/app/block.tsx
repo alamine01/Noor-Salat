@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Animated, BackHandler, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, BackHandler, Linking, Pressable, StyleSheet, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Defs, G, Path, RadialGradient, Stop, Circle } from 'react-native-svg';
-import { Ar, Label, Serif, T } from '../components/Text';
+import { Ar, Label, Serif, T, Text } from '../components/Text';
 import { Icon } from '../components/Icon';
 import { Backdrop, GhostButton, Ripples, Rise, useBreath, useLoop } from '../components/ui';
 import { C, F } from '../lib/theme';

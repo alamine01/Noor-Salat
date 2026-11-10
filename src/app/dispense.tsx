@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { Screen } from '../components/Screen';
 import { PageHeader, Section } from '../components/PageHeader';
-import { Label, T } from '../components/Text';
+import { Label, T, Text } from '../components/Text';
 import { Icon } from '../components/Icon';
 import { Card, GhostButton, PrimaryButton, Ring, Rise, Row, Toggle } from '../components/ui';
 import { C, F } from '../lib/theme';

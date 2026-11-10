@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Animated, BackHandler, Easing, Platform, StyleSheet, Text, View } from 'react-native';
+import { Animated, BackHandler, Easing, Platform, StyleSheet, View } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Circle, Defs, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Accelerometer } from 'expo-sensors';
-import { Ar, T } from '../components/Text';
+import { Ar, T, Text } from '../components/Text';
 import { Icon } from '../components/Icon';
 import { GhostButton, ND, PrimaryButton, Ring, Rise, useBreath } from '../components/ui';
 import { C, F } from '../lib/theme';
@@ -219,7 +219,7 @@ function Count({ n }: { n: number }) {
   }, [n, s]);
   return (
     <View style={{ flexDirection: 'row', alignItems: 'baseline', marginTop: 18 }}>
-      <Animated.Text style={{ fontFamily: F.thin, fontSize: 72, color: C.text, fontVariant: ['tabular-nums'], transform: [{ scale: s }] }}>{n}</Animated.Text>
+      <Animated.Text maxFontSizeMultiplier={1.2} style={{ fontFamily: F.thin, fontSize: 72, color: C.text, fontVariant: ['tabular-nums'], transform: [{ scale: s }] }}>{n}</Animated.Text>
       <Text style={{ fontFamily: F.light, fontSize: 22, color: C.dim }}> / {GOAL}</Text>
     </View>
   );

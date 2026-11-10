@@ -24,7 +24,7 @@ const STEPS: { key: StepKey; title: string; sub: string; href: string }[] = [
 export const markGuide = (k: StepKey) => AsyncStorage.setItem('guide:' + k, '1').catch(() => {});
 
 async function doneSteps(): Promise<Record<StepKey, boolean>> {
-  const v = Object.fromEntries(await AsyncStorage.multiGet(STEPS.map((s) => 'guide:' + s.key)).catch(() => [])) as Record<string, string | null>;
+  const v = Object.fromEntries(await AsyncStorage.multiGet(STEPS.map((s) => 'guide:' + s.key)).catch(() => [])) as Record<string, string | null>; // inclut guide:apps
   let scanned = v['guide:scan'] === '1';
   if (!scanned) {
     // Une prière validée ces 30 derniers jours suffit.
@@ -32,7 +32,9 @@ async function doneSteps(): Promise<Record<StepKey, boolean>> {
     const rows = await AsyncStorage.multiGet(keys).catch(() => []);
     scanned = rows.some(([, x]) => !!x && x !== '[]');
   }
-  return { qr: v['guide:qr'] === '1', apps: blockingReady(), scan: scanned, fajr: v['guide:fajr'] === '1', focus: v['guide:focus'] === '1' };
+  const ready = blockingReady();
+  if (ready) markGuide('apps');
+  return { qr: v['guide:qr'] === '1', apps: ready || v['guide:apps'] === '1', scan: scanned, fajr: v['guide:fajr'] === '1', focus: v['guide:focus'] === '1' };
 }
 
 /** Carte « Premiers pas » de l'Accueil : se coche toute seule, disparaît une fois terminée. */

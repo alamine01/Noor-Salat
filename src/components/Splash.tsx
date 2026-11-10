@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Defs, G, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 import { C, F } from '../lib/theme';
 import { Backdrop, HoldButton, ND, useBreath, useLoop } from './ui';
+import { Text } from './Text';
 
 const ACircle = Animated.createAnimatedComponent(Circle);
 const WORD = ['N', 'o', 'o', 'r', ' ', 'S', 'a', 'l', 'â', 't'];
@@ -100,15 +101,15 @@ export function Splash({ onDone, auto = false }: { onDone: () => void; auto?: bo
             const a = 0.3 + i * 0.022;
             const v = at(a, a + 0.2);
             return (
-              <Animated.Text key={i} style={{
+              <Animated.Text key={i} maxFontSizeMultiplier={1.2} style={{
                 fontFamily: i > 4 ? F.serifItalic : F.serif, fontSize: 46, color: i > 4 ? C.gold : C.text, width: l === ' ' ? 12 : undefined,
                 opacity: v, transform: [{ translateY: v.interpolate({ inputRange: [0, 1], outputRange: [18, 0] }) }],
               }}>{l === ' ' ? '' : l}</Animated.Text>
             );
           })}
         </View>
-        <Animated.Text style={{ fontFamily: F.arabic, fontSize: 22, color: C.dim, marginTop: 4, opacity: at(0.6, 0.8) }}>نور الصلاة</Animated.Text>
-        <Animated.Text style={{ fontFamily: F.regular, fontSize: 13, letterSpacing: 0.5, color: C.dim, marginTop: 14, opacity: at(0.72, 0.9) }}>Ta prière, ta lumière.</Animated.Text>
+        <Animated.Text maxFontSizeMultiplier={1.2} style={{ fontFamily: F.arabic, fontSize: 22, color: C.dim, marginTop: 4, opacity: at(0.6, 0.8) }}>نور الصلاة</Animated.Text>
+        <Animated.Text maxFontSizeMultiplier={1.2} style={{ fontFamily: F.regular, fontSize: 13, letterSpacing: 0.5, color: C.dim, marginTop: 14, opacity: at(0.72, 0.9) }}>Ta prière, ta lumière.</Animated.Text>
       </View>
 
       {!auto && (

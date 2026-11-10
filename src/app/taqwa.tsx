@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Alert, Animated, AppState, Linking, Platform, Pressable, StyleSheet, Text, TextInput, View, useWindowDimensions } from 'react-native';
+import { Alert, Animated, AppState, Linking, Platform, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Screen } from '../components/Screen';
 import { PageHeader, Section } from '../components/PageHeader';
-import { Label, T } from '../components/Text';
+import { Label, T, Text, TextInput } from '../components/Text';
 import { Icon } from '../components/Icon';
 import { Card, Chip, GhostButton, PrimaryButton, Ring, Ripples, Rise, Row, Toggle, useBreath } from '../components/ui';
 import { C, F } from '../lib/theme';

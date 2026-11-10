@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Alert, Animated, Platform, StyleSheet, Text, View } from 'react-native';
+import { Alert, Animated, Platform, StyleSheet, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { Screen } from '../components/Screen';
 import { PageHeader } from '../components/PageHeader';
-import { T } from '../components/Text';
+import { T, Text } from '../components/Text';
 import { Icon } from '../components/Icon';
 import { Chip, Halo, HoldButton, PrimaryButton, Ring, Rise, useLoop } from '../components/ui';
 import { C, F } from '../lib/theme';

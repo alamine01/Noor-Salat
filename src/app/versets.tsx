@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Animated, BackHandler, Easing, Text, View } from 'react-native';
+import { Animated, BackHandler, Easing, View } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Screen } from '../components/Screen';
 import { PageHeader } from '../components/PageHeader';
-import { Ar, Label, T } from '../components/Text';
+import { Ar, Label, T, Text } from '../components/Text';
 import { Card, GhostButton, PrimaryButton, Rise } from '../components/ui';
 import { C, F } from '../lib/theme';
 import { haptic } from '../lib/haptics';

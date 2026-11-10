@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { Alert, Animated, Easing, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Animated, Easing, Pressable, StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Screen } from '../components/Screen';
 import { PageHeader } from '../components/PageHeader';
-import { T } from '../components/Text';
+import { T, Text, TextInput } from '../components/Text';
 import { Icon } from '../components/Icon';
 import { Card, Chip, Halo, IconButton, ND, PrimaryButton, Ring, Segmented } from '../components/ui';
 import { C, F } from '../lib/theme';
@@ -148,7 +148,7 @@ export default function Adhkar() {
             {d.ar
               ? <Text numberOfLines={2} adjustsFontSizeToFit style={{ fontFamily: F.arabic, fontSize: 28, lineHeight: 44, color: C.goldBright, textAlign: 'center', paddingHorizontal: 18 }}>{d.ar}</Text>
               : <Text numberOfLines={2} adjustsFontSizeToFit style={{ fontFamily: F.serifItalic, fontSize: 22, lineHeight: 28, color: C.goldBright, textAlign: 'center', paddingHorizontal: 18 }}>{d.tr}</Text>}
-            <Animated.Text style={{ fontFamily: F.thin, fontSize: 64, lineHeight: 70, color: C.text, fontVariant: ['tabular-nums'], transform: [{ scale: bump }] }}>{n}</Animated.Text>
+            <Animated.Text maxFontSizeMultiplier={1.2} style={{ fontFamily: F.thin, fontSize: 64, lineHeight: 70, color: C.text, fontVariant: ['tabular-nums'], transform: [{ scale: bump }] }}>{n}</Animated.Text>
             <T style={{ fontSize: 12, color: done ? C.goldBright : C.dim }}>{done ? 'terminé · touche pour recommencer' : unlimited ? 'sans limite' : `sur ${d.goal}`}</T>
           </View>
         </Ring>

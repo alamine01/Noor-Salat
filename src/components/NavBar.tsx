@@ -1,4 +1,4 @@
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { router, usePathname } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { C, F } from '../lib/theme';
 import { haptic } from '../lib/haptics';
 import { Icon, IconName } from './Icon';
+import { Text } from './Text';
 
 type Href = '/' | '/progres' | '/adhkar' | '/focus';
 const LEFT: { href: Href; label: string; icon: IconName }[] = [
@@ -28,7 +29,7 @@ export function NavBar() {
       <Pressable key={it.href} style={st.item} accessibilityRole="tab" accessibilityLabel={it.label} accessibilityState={{ selected: on }}
         onPress={() => { if (!on) { haptic.tap(); router.replace(it.href); } }}>
         <Icon name={it.icon} size={22} color={col} />
-        <Text style={{ fontFamily: F.medium, fontSize: 10, color: col, marginTop: 4 }}>{it.label}</Text>
+        <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8} style={{ fontFamily: F.medium, fontSize: 10, color: col, marginTop: 4 }}>{it.label}</Text>
       </Pressable>
     );
   };

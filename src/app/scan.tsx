@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Easing, Platform, Pressable, StyleSheet, Text, View , Linking } from 'react-native';
+import { Animated, Easing, Platform, Pressable, StyleSheet, View, Linking } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { T, Label } from '../components/Text';
+import { T, Label, Text } from '../components/Text';
 import { Icon, IconName } from '../components/Icon';
 import { GhostButton, IconButton, ND, PrimaryButton, Rise, goBack, useBreath, useLoop } from '../components/ui';
 import { Validated } from '../components/Validated';

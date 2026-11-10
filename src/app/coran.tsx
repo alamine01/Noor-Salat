@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Animated, Easing, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Animated, Easing, FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PageHeader } from '../components/PageHeader';
-import { Label, T } from '../components/Text';
+import { Label, T, Text, TextInput } from '../components/Text';
 import { Icon } from '../components/Icon';
 import { Backdrop, Rise, Segmented, useLoop } from '../components/ui';
 import { C, F } from '../lib/theme';

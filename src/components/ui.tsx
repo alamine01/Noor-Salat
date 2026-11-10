@@ -1,11 +1,11 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { Animated, Easing, Platform, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Animated, Easing, Platform, Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import Svg, { Circle, Defs, LinearGradient as SvgLinear, RadialGradient, Rect, Stop } from 'react-native-svg';
 import { router } from 'expo-router';
 import { C, F, R } from '../lib/theme';
 import { haptic } from '../lib/haptics';
 import { Icon, IconName } from './Icon';
-import { T } from './Text';
+import { T, Text } from './Text';
 
 export const ND = Platform.OS !== 'web'; // useNativeDriver
 
@@ -203,12 +203,12 @@ export function Card({ children, style, gold }: { children: ReactNode; style?: S
 export function Row({ title, sub, right, onPress, last, icon }: { title: string; sub?: string; right?: ReactNode; onPress?: () => void; last?: boolean; icon?: ReactNode }) {
   const inner = (
     <>
-      {icon}
-      <View style={{ flex: 1, gap: 2 }}>
+      {icon ? <View style={{ flexShrink: 0 }}>{icon}</View> : null}
+      <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
         <T style={{ fontSize: 14 }}>{title}</T>
-        {sub ? <T style={{ fontSize: 11.5, color: C.dim }}>{sub}</T> : null}
+        {sub ? <T style={{ fontSize: 11.5, lineHeight: 16, color: C.dim }}>{sub}</T> : null}
       </View>
-      {right}
+      {right ? <View style={{ flexShrink: 0, maxWidth: '45%', alignItems: 'flex-end' }}>{right}</View> : null}
     </>
   );
   const st = [s.row, !last && s.rowLine];
@@ -238,7 +238,7 @@ export function Chip({ label, on, onPress, style }: { label: string; on: boolean
   return (
     <Pressable accessibilityRole="radio" accessibilityState={{ selected: on }} onPress={() => { haptic.tap(); onPress(); }}
       style={[s.chip, { backgroundColor: on ? C.gold : C.surface2 }, style]}>
-      <Text style={{ fontFamily: F.medium, fontSize: 13, color: on ? C.ink : C.soft }}>{label}</Text>
+      <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75} style={{ fontFamily: F.medium, fontSize: 13, color: on ? C.ink : C.soft }}>{label}</Text>
     </Pressable>
   );
 }
@@ -250,7 +250,7 @@ export function Segmented({ items, value, onChange }: { items: string[]; value: 
       {items.map((it, i) => (
         <Pressable key={it} accessibilityRole="tab" accessibilityState={{ selected: i === value }} onPress={() => { haptic.tap(); onChange(i); }}
           style={[s.segItem, i === value && { backgroundColor: C.gold }]}>
-          <Text style={{ fontFamily: F.medium, fontSize: 13, color: i === value ? C.ink : C.soft }}>{it}</Text>
+          <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75} style={{ fontFamily: F.medium, fontSize: 13, color: i === value ? C.ink : C.soft }}>{it}</Text>
         </Pressable>
       ))}
     </View>
@@ -336,7 +336,7 @@ export const s = StyleSheet.create({
   ghost: { minHeight: 50, borderRadius: 16, borderWidth: 1, borderColor: C.line2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingHorizontal: 16 },
   iconBtn: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', backgroundColor: 'rgba(255,255,255,0.04)', alignItems: 'center', justifyContent: 'center' },
   card: { borderRadius: R.card, paddingHorizontal: 18, paddingVertical: 4, backgroundColor: C.surface, borderWidth: 1, borderColor: C.line },
-  row: { minHeight: 62, flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 8 },
+  row: { minHeight: 62, flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10 },
   rowLine: { borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.06)' },
   track: { width: 46, height: 28, borderRadius: 14, padding: 3 },
   knob: { width: 22, height: 22, borderRadius: 11, backgroundColor: C.text },
