@@ -1,0 +1,63 @@
+# Fichiers que EAS n'envoie pas pour la compilation (remplace .gitignore pour EAS).
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+# generated native folders
+/ios
+/android
+
+# .env (clés Firebase publiques côté appli) est envoyé à EAS pour la compilation
+
+# APK de test (trop lourd pour git : envoyé à part)
+*.apk
+*.aab
+
+# Réglages locaux de Claude
+.claude/
+
+# Fichiers de compilation
+build/
+.gradle/
+
+_sauvegarde_avant_design_v4/
+
+captures/
+**/.gradle/
+RAPPORT.md
+
+_a_supprimer/
