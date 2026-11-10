@@ -25,11 +25,12 @@ export default function Profile() {
     <Screen nav={false}>
       <Rise style={{ flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 6 }}>
         <IconButton icon="back" label="Retour" onPress={goBack} />
-        <View style={st.avatar}><Text style={{ fontFamily: F.arabic, fontSize: 26, lineHeight: 40, color: C.goldBright }}>ن</Text></View>
-        <View style={{ flex: 1 }}>
-          <Text style={{ fontFamily: F.serif, fontSize: 28, lineHeight: 32, color: C.text }}>Mon espace</Text>
+        <View style={[st.avatar, { flexShrink: 0 }]}><Text style={{ fontFamily: F.arabic, fontSize: 26, lineHeight: 40, color: C.goldBright }}>ن</Text></View>
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} style={{ fontFamily: F.serif, fontSize: 28, lineHeight: 32, color: C.text }}>Mon espace</Text>
           <Pressable onPress={() => router.push('/compte')} accessibilityRole="button">
-            <T style={{ fontSize: 12, color: C.dim }}>{id} · <T style={{ fontSize: 12, color: C.gold }}>{firebaseConfigured ? 'mon compte' : 'sur ce téléphone'}</T></T>
+            <T numberOfLines={1} ellipsizeMode="middle" style={{ fontSize: 12, color: C.dim }}>{id}</T>
+            <T numberOfLines={1} style={{ fontSize: 12, color: C.gold }}>{firebaseConfigured ? 'Mon compte' : 'Sur ce téléphone'}</T>
           </Pressable>
         </View>
         <IconButton icon="settings" label="Réglages" onPress={() => router.push('/parametres')} />

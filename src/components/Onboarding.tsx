@@ -61,7 +61,8 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
     // Les réponses règlent l'appli.
     const fajr = await getFajr();
     await setFajr({ ...fajr, enabled: !!(goals.fajr || obst.sommeil) || fajr.enabled });
-    await setBlockEnabled(!!(goals.cinq || goals.reseaux || obst.tel) || !Object.values(goals).some(Boolean));
+    // La présentation peut ACTIVER le blocage, jamais le désactiver (sinon la refaire coupait le blocage sans prévenir).
+    if (goals.cinq || goals.reseaux || obst.tel || !Object.values(goals).some(Boolean)) await setBlockEnabled(true);
     await setNotifStyle(obst.oubli || goals.cinq ? 'complet' : 'essentiel');
     if (goals.tahajjud) {
       const d = await loadTodayTimes().catch(() => null);

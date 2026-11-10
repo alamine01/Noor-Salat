@@ -150,7 +150,8 @@ const hm = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.get
 function prayerShield(id: string, p: PrayerKey, time: string) {
   shield(id, {
     title: `${PRAYER_FR[p]} · ${time}`,
-    subtitle: `L'adhan a retenti il y a 5 minutes.\n{rappel_priere}\n\n${SCAN}`,
+    // Texte fixe (l'écran Apple ne peut pas recalculer l'heure) : il reste juste pendant toute l'heure de blocage.
+    subtitle: `Le temps de ${PRAYER_FR[p] === 'Asr' ? "l'Asr" : PRAYER_FR[p] === 'Isha' ? "l'Isha" : 'la prière de ' + PRAYER_FR[p]} a commencé.\n\n{rappel_priere}\n\n${SCAN}`,
     icon: PRAYER_ICON[p], button: 'Je vais prier',
     notif: { title: `${PRAYER_FR[p]} · ${time}`, body: 'Touche ici pour scanner ton tapis.', url: 'noorsalat://block' },
   });
