@@ -15,6 +15,7 @@ import { getDayLogs, getFajr, getUserId, logPrayer, qrPayload, streakDays } from
 import { playDing, playWoosh } from '../lib/sounds';
 import { cancelTodayBlock, unlock } from '../lib/blocker';
 import { stopAlarm } from '../lib/alarm';
+import { Tip } from '../components/Guide';
 
 type Step = 'scan' | 'saving' | 'done' | 'wrong';
 type Result = { time: string; place: string; photo?: string; done: number; before: number; after: number };
@@ -141,6 +142,7 @@ export default function Scan() {
         <View style={{ flex: 1 }} />
         <Rise delay={350} style={st.sheet}>
           <View style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.18)', alignSelf: 'center', marginTop: -6, marginBottom: 14 }} />
+          <View style={{ marginBottom: 12 }}><Tip id="scan" title="Valider ta prière">Après avoir prié, vise le QR collé sur ton tapis : la prière est validée et tes applis reviennent. Ton QR se trouve dans Profil.</Tip></View>
           <Label>Preuve enregistrée</Label>
           <View style={{ flexDirection: 'row', gap: 8, marginTop: 14 }}>
             {([['camera', 'Photo'], ['clock', 'Heure'], ['pin', 'Position']] as [IconName, string][]).map(([ic, l]) => (

@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PRAYERS, PrayerKey, loadTimesFor, toDate, todayKey } from './prayer';
 import type { PrayerLog } from './store';
+import { currentPeriod, currentDay, dispensedDays, getDispense, getGender } from './dispense';
 
 /** Paliers de série (jours d'affilée avec les 5 prières). */
 export const MILESTONES = [3, 7, 14, 30, 40, 100];
@@ -10,11 +11,12 @@ export type Progress = {
   noor: number; noorPrev: number;           // % sur 7 jours, et sur les 7 jours d'avant
   streak: number; best: number;
   week: { day: string; count: number }[];   // 7 derniers jours
-  month: { day: number; count: number | null; today: boolean }[]; firstWeekday: number; // 0 = lundi
+  month: { day: number; count: number | null; today: boolean; off: boolean }[]; firstWeekday: number; // 0 = lundi
   perPrayer: Record<PrayerKey, number>;     // sur 30 jours
   delay: Partial<Record<PrayerKey, number>>; // minutes moyennes après l'adhan (14 jours)
   total: number;                            // prières validées sur l'année
   dhikrToday: number; dhikrWeek: number;
+  dispenseDay: number | null;               // jour N de la dispense en cours (null = pas de dispense)
 };
 
 const dayOffset = (i: number) => { const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() - i); return d; };
@@ -30,15 +32,24 @@ export async function loadProgress(): Promise<Progress> {
   const logs = (i: number): PrayerLog[] => { try { return JSON.parse(map.get('logs:' + todayKey(dayOffset(i))) ?? '[]'); } catch { return []; } };
   const n = (i: number) => logs(i).length;
 
+  // Jours de dispense : neutres (ne cassent pas la série, ne comptent pas dans le Noor).
+  const skip = await dispensedDays();
+  const off = (i: number) => skip.has(todayKey(dayOffset(i)));
+
   // Séries
   let streak = 0;
-  for (let i = 0; i < N; i++) { if (n(i) >= 5) streak++; else if (i === 0) continue; else break; }
+  for (let i = 0; i < N; i++) { if (off(i)) continue; if (n(i) >= 5) streak++; else if (i === 0) continue; else break; }
   let best = 0, cur = 0;
-  for (let i = N - 1; i >= 0; i--) { if (n(i) >= 5) { cur++; best = Math.max(best, cur); } else if (i !== 0) cur = 0; }
+  for (let i = N - 1; i >= 0; i--) { if (off(i)) continue; if (n(i) >= 5) { cur++; best = Math.max(best, cur); } else if (i !== 0) cur = 0; }
 
-  let w = 0, wp = 0, total = 0;
-  for (let i = 0; i < 7; i++) w += n(i);
-  for (let i = 7; i < 14; i++) wp += n(i);
+  // Noor : 7 derniers jours sans dispense, et les 7 d'avant.
+  const noorOf = (from: number) => {
+    let done = 0, days = 0, i = from;
+    for (; i < N && days < 7; i++) { if (off(i)) continue; done += n(i); days++; }
+    return { pct: days ? Math.round((done / (days * 5)) * 100) : 0, next: i };
+  };
+  const nA = noorOf(0), nB = noorOf(nA.next);
+  let total = 0;
   for (let i = 0; i < N; i++) total += n(i);
 
   const names = ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa'];
@@ -50,7 +61,7 @@ export async function loadProgress(): Promise<Progress> {
   const month = Array.from({ length: days }, (_, k) => {
     const d = k + 1;
     const ago = now.getDate() - d;
-    return { day: d, count: ago < 0 ? null : n(ago), today: ago === 0 };
+    return { day: d, count: ago < 0 ? null : n(ago), today: ago === 0, off: ago >= 0 && off(ago) };
   });
   const firstWeekday = (new Date(now.getFullYear(), now.getMonth(), 1).getDay() + 6) % 7;
 
@@ -79,8 +90,9 @@ export async function loadProgress(): Promise<Progress> {
 
   return {
     today: logs(0).map((l) => l.prayer),
-    noor: Math.round((w / 35) * 100), noorPrev: Math.round((wp / 35) * 100),
+    noor: nA.pct, noorPrev: nB.pct,
     streak, best, week, month, firstWeekday, perPrayer, delay, total,
     dhikrToday: dh(0), dhikrWeek,
+    dispenseDay: await (async () => { if ((await getGender()) !== 'femme') return null; const p = currentPeriod(await getDispense()); return p ? currentDay(p) : null; })(),
   };
 }

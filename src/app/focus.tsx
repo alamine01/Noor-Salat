@@ -12,6 +12,7 @@ import { FOCUS_LEVELS, FocusLevel, FocusSession, getFocusLevel, getFocusSession,
 import { FOCUS_PAUSES, blockingReady, canReallyBlock, resumeFocus, startFocus, stopFocus } from '../lib/blocker';
 import { router } from 'expo-router';
 import { screenTimeStatus, selectionCount } from '../lib/ios';
+import { Tip, markGuide } from '../components/Guide';
 
 const PRESETS = [
   { label: '25 min', min: 25 },
@@ -26,6 +27,7 @@ export default function Focus() {
   const [session, setSession] = useState<FocusSession | null>(null);
   const [now, setNow] = useState(Date.now());
   const [askPause, setAskPause] = useState(false);
+  useEffect(() => { markGuide('focus'); }, []);
   const [lv, setLv] = useState<FocusLevel>(FOCUS_LEVELS.moyen);
   const [pauseMin, setPauseMin] = useState(10);
 
@@ -81,6 +83,7 @@ export default function Focus() {
   return (
     <Screen>
       <PageHeader back={false} title="Session Focus" subtitle="En dehors des prières" />
+      <Tip id="focus" title="Focus, c’est quoi ?">Choisis une durée, puis touche « Commencer » : tes applis sont en pause pour que tu restes concentré. Une pause ou un arrêt demandent de lire des versets d’abord.</Tip>
 
       <View style={{ alignSelf: 'center', width: 240, height: 240, alignItems: 'center', justifyContent: 'center', marginTop: 4 }}>
         <Halo size={190} opacity={0.3} />

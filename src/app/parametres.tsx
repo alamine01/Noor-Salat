@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AppState, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Alert, AppState, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Screen } from '../components/Screen';
 import { PageHeader, Section } from '../components/PageHeader';
@@ -19,7 +19,11 @@ import { canReallyBlock, permissionsStatus, scheduleDay, testBlockNow } from '..
 import { NoorBlocker } from '../../modules/noor-blocker';
 import { IosBlocking } from '../components/IosBlocking';
 import { findPlace } from '../lib/places';
+import { Gender, getGender, setGender } from '../lib/dispense';
 import { UpdateInfo } from '../components/UpdateInfo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Updates from 'expo-updates';
+import { ONBOARDING_KEY } from '../components/Onboarding';
 
 const AUDIO: Record<FajrSettings['audio'], string> = { khayr: 'As-salātu khayrun mina-n-nawm', adhan_fajr: 'Adhan du Fajr', systeme: 'Sonnerie du téléphone' };
 
@@ -28,6 +32,7 @@ export default function Parametres() {
   const [place, setPlace] = useState<PlaceSetting>('gps');
   const [level, setLevel] = useState<FocusLevel>(FOCUS_LEVELS.moyen);
   const [focusOn, setFocusOn] = useState(false);
+  const [gender, setGenderS] = useState<Gender | null>(null);
   const placeRef = useRef<string | null>(null); // lieu au dernier affichage (pour recharger après /lieu)
   const [adj, setAdj] = useState<Adjustments>(NO_ADJUST);
   const [day, setDay] = useState<DayTimes | null>(null);
@@ -58,6 +63,7 @@ export default function Parametres() {
       setBlock(await getBlockEnabled());
       setStyle(await getNotifStyle());
       setLevel(await getFocusLevel());
+      setGenderS(await getGender());
       setAdhanS(await getAdhan());
       reload();
     })();
@@ -129,6 +135,32 @@ export default function Parametres() {
         <Row last title="Mon compte et sauvegarde" sub="Retrouver ta série sur un nouveau téléphone, classement" onPress={() => router.push('/compte')}
           icon={<View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: 'rgba(226,192,141,0.14)', alignItems: 'center', justifyContent: 'center' }}><Icon name="shieldCheck" size={16} color={C.gold} /></View>}
           right={<Icon name="chevron" size={16} color={C.faint} />} />
+      </Card>
+
+      <Section>Profil</Section>
+      <Card style={{ paddingVertical: 16, gap: 12 }}>
+        <T style={{ fontSize: 13, color: C.soft }}>Je suis</T>
+        <Segmented items={['Un frère', 'Une sœur']} value={gender === 'femme' ? 1 : gender === 'homme' ? 0 : -1}
+          onChange={async (i) => { const g = i === 1 ? 'femme' : 'homme'; haptic.tap(); setGenderS(g); await setGender(g); reload(); }} />
+        {gender === 'femme' && (
+          <Pressable onPress={() => router.push('/dispense')} accessibilityRole="button" style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingTop: 4 }}>
+            <Icon name="moon" size={16} color={C.gold} />
+            <T style={{ flex: 1, fontSize: 14 }}>Dispense et suivi du cycle</T>
+            <Icon name="chevron" size={16} color={C.faint} />
+          </Pressable>
+        )}
+      </Card>
+      <Card>
+        <Row title="Comment ça marche" sub="Les réponses aux questions fréquentes" onPress={() => router.push('/aide')} right={<Icon name="chevron" size={16} color={C.faint} />} />
+        <Row last title="Revoir la présentation" sub="L'accueil du premier lancement" right={<Icon name="chevron" size={16} color={C.faint} />}
+          onPress={() => Alert.alert('Revoir la présentation ?', 'L’appli va redémarrer sur les écrans d’accueil. Tes réponses remplaceront tes réglages actuels (réveil, blocage, rappels).', [
+            { text: 'Annuler', style: 'cancel' },
+            { text: 'Revoir', onPress: async () => {
+              await AsyncStorage.removeItem(ONBOARDING_KEY);
+              // Redémarre l'appli tout de suite ; sinon, au prochain lancement.
+              await Updates.reloadAsync().catch(() => Alert.alert('Presque prêt', 'Ferme complètement Noor Salat puis rouvre-le.'));
+            } },
+          ])} />
       </Card>
 
       <Section>Lieu</Section>

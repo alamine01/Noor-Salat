@@ -14,6 +14,7 @@ import { getTaqwa, setTaqwa } from '../lib/store';
 import { iosFilterActive, iosSetFilter, isIOS, screenTimeAvailable } from '../lib/ios';
 import { CANCEL_DELAY_H, Engagement, GOALS, MAX_DAYS, engagementInfo, getEngagement, getHistory, keepEngagement, settleEngagement, startEngagement } from '../lib/engagement';
 import { dateCourte } from '../lib/format';
+import { Tip } from '../components/Guide';
 
 export default function Taqwa() {
   if (Platform.OS === 'android' && !ANDROID_FILTER) return <TaqwaSoon />;
@@ -88,6 +89,7 @@ function TaqwaFilter() {
   return (
     <Screen nav={false}>
       <PageHeader title="Taqwa" subtitle="Protège ton regard" />
+      <Tip id="taqwa" title="Protéger ton regard">Active le filtre pour bloquer les sites pour adultes sur tout le téléphone. Pour aller plus loin, prends un engagement : il ne pourra plus être coupé depuis l’appli avant la date choisie.</Tip>
 
       <View style={{ alignItems: 'center', marginTop: 4 }}>
         <View style={{ width: 104, height: 104, alignItems: 'center', justifyContent: 'center' }}>

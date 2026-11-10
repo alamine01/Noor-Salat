@@ -12,6 +12,7 @@ import { C, F } from '../lib/theme';
 import { getUserId, noorPercent, qrPayload, streakDays } from '../lib/store';
 import { Rank, firebaseConfigured, loadLeaderboard } from '../lib/firebase';
 import { getPrayerPlace, qiblaBearing } from '../lib/prayer';
+import { markGuide } from '../components/Guide';
 
 export default function Profile() {
   const params = useLocalSearchParams<{ tab?: string }>();
@@ -43,6 +44,7 @@ export default function Profile() {
 
 function QrTab({ id }: { id: string }) {
   const [big, setBig] = useState(false);
+  useEffect(() => { markGuide('qr'); }, []);
   const line = useLoop(3000, 0, Easing.inOut(Easing.sin));
   return (
     <Rise style={{ alignItems: 'center', gap: 18 }}>

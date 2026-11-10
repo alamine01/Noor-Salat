@@ -15,6 +15,8 @@ import { isIOS, screenTimeStatus, selectionCount } from '../lib/ios';
 import { canCheckFilter, checkFilter } from '../lib/taqwa';
 import { settleEngagement } from '../lib/engagement';
 import { syncProfile } from '../lib/firebase';
+import { currentDay, currentPeriod, getDispense, getGender, setGender } from '../lib/dispense';
+import { FirstSteps } from '../components/Guide';
 
 const TOOLS: { label: string; href: string; icon: IconName }[] = [
   { label: 'Prières', href: '/prieres', icon: 'clock' },
@@ -32,6 +34,9 @@ export default function Home() {
   const [streak, setStreak] = useState(0);
   const [missing, setMissing] = useState(0);
   const [now, setNow] = useState(new Date());
+  const [femme, setFemme] = useState(false);
+  const [askGender, setAskGender] = useState(false);
+  const [dispDay, setDispDay] = useState<number | null>(null);
 
   const refresh = useCallback(async () => {
     const d = await loadTodayTimes();
@@ -39,6 +44,11 @@ export default function Home() {
     setDone((await getDayLogs()).map((l) => l.prayer));
     setNoor(await noorPercent());
     setStreak(await streakDays());
+    const g = await getGender();
+    setFemme(g === 'femme');
+    setAskGender(g === null);
+    const cp = g === 'femme' ? currentPeriod(await getDispense()) : null;
+    setDispDay(cp ? currentDay(cp) : null);
     const blockOn = await getBlockEnabled();
     if (canReallyBlock) setMissing(blockOn ? missingPermissions() : 0);
     else if (isIOS && blockOn && screenTimeStatus() !== 'unavailable') setMissing((screenTimeStatus() === 'approved' ? 0 : 1) + (selectionCount() ? 0 : 1));
@@ -136,7 +146,7 @@ export default function Home() {
       </Rise>
 
       <Rise delay={850} style={{ flexDirection: 'row', marginTop: 20, marginHorizontal: -6 }}>
-        {TOOLS.map((t) => (
+        {(femme ? [...TOOLS.slice(0, 5), { label: 'Dispense', href: '/dispense', icon: 'moon' as IconName }, TOOLS[5]] : TOOLS).map((t) => (
           <Pressable key={t.label} onPress={() => { haptic.tap(); router.push(t.href as never); }} accessibilityRole="button" accessibilityLabel={t.label}
             style={({ pressed }) => [{ flex: 1, alignItems: 'center', gap: 7, opacity: pressed ? 0.7 : 1 }]}>
             <View style={st.tool}><Icon name={t.icon} size={21} color={C.gold} stroke={1.6} /></View>
@@ -145,7 +155,31 @@ export default function Home() {
         ))}
       </Rise>
 
-      {missing > 0 && (
+      {askGender && (
+        <Rise delay={880} style={[st.warn, { marginTop: 22, flexWrap: 'wrap' }]}>
+          <T style={{ flex: 1, minWidth: 160, fontSize: 13, color: C.soft }}>Pour adapter l’appli, tu es…</T>
+          {([['homme', 'Un frère'], ['femme', 'Une sœur']] as const).map(([k, label]) => (
+            <Pressable key={k} onPress={async () => { haptic.tap(); await setGender(k); refresh(); }} accessibilityRole="button"
+              style={{ height: 40, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(226,192,141,0.4)', justifyContent: 'center' }}>
+              <T style={{ fontSize: 13, color: C.goldBright }}>{label}</T>
+            </Pressable>
+          ))}
+        </Rise>
+      )}
+
+      <Rise delay={900} style={{ marginTop: 22 }}><FirstSteps /></Rise>
+
+      {dispDay !== null && (
+        <Rise delay={950} style={{ marginTop: 22 }}>
+          <Pressable onPress={() => router.push('/dispense')} style={st.warn} accessibilityRole="button">
+            <Icon name="moon" size={16} color={C.gold} />
+            <T style={{ flex: 1, fontSize: 13, color: C.soft }}>Pause en cours · jour {dispDay}. Blocages et réveil suspendus.</T>
+            <Icon name="chevron" size={16} color={C.faint} />
+          </Pressable>
+        </Rise>
+      )}
+
+      {missing > 0 && dispDay === null && (
         <Rise delay={1000} style={{ marginTop: 22 }}>
           <Pressable onPress={() => router.push('/parametres')} style={st.warn} accessibilityRole="button">
             <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: C.warn }} />

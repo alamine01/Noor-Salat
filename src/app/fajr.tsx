@@ -17,6 +17,7 @@ import { SOURCES, iosSoundFile } from '../lib/alarm';
 import { alarmKitAuthorized, alarmKitAvailable, isIOS, requestAlarmKit, testIosAlarm } from '../lib/ios';
 import { loadTodayTimes, toDate, scheduleSafe } from '../lib/fajr-helpers';
 import { hhmm } from '../lib/prayer';
+import { markGuide } from '../components/Guide';
 
 const AUDIOS: { key: FajrSettings['audio']; title: string; note: string }[] = [
   { key: 'khayr', title: 'الصلاة خير من النوم', note: 'As-salātu khayrun mina-n-nawm, en boucle' },
@@ -32,6 +33,7 @@ export default function Fajr() {
   const [akOk, setAkOk] = useState<boolean | null>(null);
   const [akMsg, setAkMsg] = useState('');
   const ak = alarmKitAvailable();
+  useEffect(() => { markGuide('fajr'); }, []);
   const player = useRef<AudioPlayer | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 

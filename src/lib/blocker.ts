@@ -6,6 +6,7 @@ import { PRAYERS, toDate, PrayerKey, loadTimesFor } from './prayer';
 import { getAdhan, getBlockEnabled, getFajr, getDayLogs, getNotifStyle, getTahajjud } from './store';
 import { SLOTS, SLOT_OFFSET, Slot, prayerMessage } from './messages';
 import { iosSoundFile, prepareAlarmSound } from './alarm';
+import { cycleStats, currentPeriod, getDispense, getGender, isDispenseActive } from './dispense';
 import { IosPlan, iosStartFocus, iosTestBlock, iosStopFocus, iosPauseFocus, iosResumeFocus, iosUnlock, isIOS, IosAlarm, alarmKitAuthorized, scheduleIosAlarms, stopIosAlarm, scheduleIosBlocking, screenTimeStatus, selectionCount } from './ios';
 
 export const canReallyBlock = Platform.OS === 'android' && !!NoorBlocker;
@@ -35,6 +36,14 @@ export function missingPermissions() {
 }
 
 const BLOCK_DELAY_MIN = 5; // blocage 5 min après l'heure de la prière
+/** Rappels doux pendant la dispense (titre, texte). */
+const GENTLE: [string, string][] = [
+  ['Un moment pour Allah', 'SubhanAllah, Alhamdulillah, Allahu Akbar.'],
+  ['Un instant de dhikr', 'Astaghfirullah. Un mot léger sur la langue, lourd dans la balance.'],
+  ['Ton cœur se souvient', 'La ilaha illa Allah.'],
+  ['Une invocation', 'Profite de ce moment pour faire une dou‘a.'],
+  ['Le rappel apaise', 'C’est par l’évocation d’Allah que les cœurs se tranquillisent.'],
+];
 const FAJR_RINGS = 30; // iPhone : le réveil du Fajr resonne chaque minute pendant 30 min, jusqu'au scan
 const DAYS_AHEAD = 7; // on programme une semaine d'avance : l'appli n'a pas besoin d'être ouverte chaque jour
 // iPhone : 64 notifications en attente au maximum (règle d'Apple). On garde les plus proches, le reste est
@@ -77,9 +86,14 @@ export function scheduleDay(todayTimes?: Record<PrayerKey, string>) {
 async function scheduleWeek(todayTimes?: Record<PrayerKey, string>) {
   if (Platform.OS === 'web') return;
   const now = new Date();
-  const block = await getBlockEnabled();
-  const fajr = await getFajr();
-  const tahajjud = await getTahajjud();
+  // Dispense (règles, après accouchement) : ni blocage, ni réveil, ni Tahajjud ; rappels doux de dhikr en option.
+  const disp = await isDispenseActive();
+  const dPrefs = await getDispense();
+  const block = (await getBlockEnabled()) && !disp;
+  const fajrRaw = await getFajr();
+  const fajr = disp ? { ...fajrRaw, enabled: false } : fajrRaw;
+  const tahajjudRaw = await getTahajjud();
+  const tahajjud = disp ? { ...tahajjudRaw, on: false } : tahajjudRaw;
   // iPhone avec AlarmKit (iOS 26+) : vrais réveils pour le Fajr et le Tahajjud, à la place des notifications.
   const realAlarms = isIOS && (await alarmKitAuthorized());
   const iosAlarms: IosAlarm[] = [];
@@ -121,6 +135,14 @@ async function scheduleWeek(todayTimes?: Record<PrayerKey, string>) {
       const at = toDate(times[p.key], day);
       const blockAt = new Date(at.getTime() + BLOCK_DELAY_MIN * 60_000);
       if (NoorBlocker && block && p.key !== 'Fajr' && blockAt > now) NoorBlocker.scheduleAlarm(alarmId(day, i), blockAt.getTime(), 'block', 60);
+      if (disp) {
+        // Pendant la dispense : un rappel doux de dhikr à l'heure de la prière (texte discret), ou rien.
+        if (dPrefs.dhikr) {
+          const g = GENTLE[(startDoy + d + i) % GENTLE.length];
+          await notify(slotId(key, p.key, 'at'), at, { title: g[0], body: g[1], sound: true, interruptionLevel: 'active', data: { url: 'noorsalat://adhkar' } }, 1);
+        }
+        continue;
+      }
       // Séquence de rappels : 10 min avant, à l'heure, +15 min, +30 min (style « complet »).
       // Le réveil Fajr remplace le « 10 min avant » du Fajr.
       const slots: Slot[] = style === 'essentiel' ? ['at'] : SLOTS.filter((sl) => !(sl === 'before' && p.key === 'Fajr' && fajr.enabled));
@@ -174,6 +196,21 @@ async function scheduleWeek(todayTimes?: Record<PrayerKey, string>) {
         if (realAlarms) iosAlarms.push({ date: w, title: 'Tahajjud · Le dernier tiers de la nuit', button: 'Je me lève', sound: null });
         else await notify(`tahajjud-${key}-${o}`, w, { title: 'Tahajjud · التهجد', body: 'Le dernier tiers de la nuit est là. Lève-toi pour prier.', sound: true, interruptionLevel: 'timeSensitive' }, 3);
       }
+    }
+  }
+
+  // Dispense : rappels discrets (aucun mot explicite sur l'écran verrouillé).
+  if ((await getGender()) === 'femme') {
+    const cur = currentPeriod(dPrefs);
+    const stats = cycleStats(dPrefs);
+    if (cur) {
+      // Vers la fin estimée : proposer de reprendre.
+      const end = new Date(cur.start + 'T10:00:00'); end.setDate(end.getDate() + (stats.duration ?? 7));
+      if (end <= now) end.setTime(now.getTime() + 86_400_000);
+      await notify('dispense-fin', end, { title: 'Noor Salat', body: 'Pense à mettre à jour ta pause quand tu es prête à reprendre.', sound: true, data: { url: 'noorsalat://dispense' } }, 3);
+    } else if (dPrefs.predict && stats.next) {
+      const at = new Date(stats.next); at.setHours(9, 0, 0, 0);
+      if (at > now) await notify('dispense-debut', at, { title: 'Noor Salat', body: 'Touche ici si tu as besoin de mettre ta pause.', sound: true, data: { url: 'noorsalat://dispense' } }, 3);
     }
   }
 

@@ -10,6 +10,7 @@ import { C, F } from '../lib/theme';
 import { moisAnnee } from '../lib/format';
 import { PRAYERS, currentPrayer, loadTodayTimes } from '../lib/prayer';
 import { MILESTONES, Progress, loadProgress } from '../lib/progress';
+import { Tip } from '../components/Guide';
 
 const OP = [0.06, 0.2, 0.35, 0.5, 0.7, 1];
 const WEEKDAYS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
@@ -38,6 +39,8 @@ export default function Progres() {
       <PageHeader back={false} title="Ton chemin" subtitle={moisAnnee()}
         right={<IconButton icon="qr" label="Mon QR de tapis" onPress={() => router.push('/profile')} />} />
 
+      <Tip id="progres" title="Ton chemin">Chaque prière validée (scan ou versets) remplit cette page : ta journée, ta série de jours complets, ton Noor sur 7 jours et ton mois.</Tip>
+
       {/* Aujourd'hui */}
       <Rise delay={60} style={st.card}>
         <View style={st.between}>
@@ -58,7 +61,9 @@ export default function Progres() {
             );
           })}
         </View>
-        {d.today.length < 5 && <T style={{ fontSize: 12, color: C.dim, marginTop: 14 }}>Scanne ton tapis après chaque prière pour la valider.</T>}
+        {d.dispenseDay !== null
+          ? <T style={{ fontSize: 12, color: C.gold, marginTop: 14 }}>Pause en cours · jour {d.dispenseDay}. Ta série et ton Noor sont mis de côté, pas perdus.</T>
+          : d.today.length < 5 && <T style={{ fontSize: 12, color: C.dim, marginTop: 14 }}>Scanne ton tapis après chaque prière pour la valider.</T>}
       </Rise>
 
       {/* Noor et séries */}
@@ -150,7 +155,7 @@ export default function Progres() {
         </View>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 4, marginHorizontal: -3 }}>
           {Array.from({ length: d.firstWeekday }).map((_, i) => <View key={'e' + i} style={{ width: `${100 / 7}%` }} />)}
-          {d.month.map((c, i) => <Cell key={i} day={c.day} today={c.today} o={c.count == null ? 0.03 : OP[Math.min(5, c.count)]} full={c.count === 5} delay={500 + i * 15} />)}
+          {d.month.map((c, i) => <Cell key={i} day={c.day} today={c.today} off={c.off} o={c.count == null || c.off ? 0.03 : OP[Math.min(5, c.count)]} full={!c.off && c.count === 5} delay={500 + i * 15} />)}
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, justifyContent: 'flex-end', marginTop: 12 }}>
           <T style={{ fontSize: 11, color: C.dim }}>0</T>
@@ -201,7 +206,7 @@ function HBar({ pct }: { pct: number }) {
   return <Animated.View style={{ height: '100%', borderRadius: 4, backgroundColor: C.gold, width: v.interpolate({ inputRange: [0, 1], outputRange: ['0%', `${Math.max(2, pct * 100)}%`] }) }} />;
 }
 
-function Cell({ o, day, today, full, delay }: { o: number; day: number; today: boolean; full: boolean; delay: number }) {
+function Cell({ o, day, today, full, off, delay }: { o: number; day: number; today: boolean; full: boolean; off?: boolean; delay: number }) {
   const v = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.timing(v, { toValue: 1, duration: 400, delay, useNativeDriver: ND }).start();
@@ -209,7 +214,7 @@ function Cell({ o, day, today, full, delay }: { o: number; day: number; today: b
   return (
     <View style={{ width: `${100 / 7}%`, padding: 3 }}>
       <Animated.View style={{ width: '100%', aspectRatio: 1, borderRadius: 8, backgroundColor: `rgba(226,192,141,${o})`, alignItems: 'center', justifyContent: 'center',
-        borderWidth: today ? 1.5 : 0, borderColor: C.goldBright, opacity: v, transform: [{ scale: v.interpolate({ inputRange: [0, 1], outputRange: [0.4, 1] }) }] }}>
+        borderWidth: today ? 1.5 : off ? 1 : 0, borderColor: today ? C.goldBright : 'rgba(226,192,141,0.35)', borderStyle: off && !today ? 'dashed' : 'solid', opacity: v, transform: [{ scale: v.interpolate({ inputRange: [0, 1], outputRange: [0.4, 1] }) }] }}>
         <T style={{ fontSize: 10, color: full ? C.ink : today ? C.goldBright : C.faint }}>{day}</T>
       </Animated.View>
     </View>

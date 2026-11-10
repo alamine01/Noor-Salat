@@ -61,7 +61,9 @@ export default function Layout() {
       const c = r.notification.request.content as { data?: Record<string, unknown> };
       const url = (c.data?.url ?? (c.data?.body as Record<string, unknown> | undefined)?.url) as string | undefined;
       setIntro(false);
-      if (url?.includes('fajr-ring')) router.push('/fajr-ring');
+      if (url?.includes('dispense')) router.push('/dispense');
+      else if (url?.includes('adhkar')) router.push('/adhkar');
+      else if (url?.includes('fajr-ring')) router.push('/fajr-ring');
       else if (url?.includes('block')) router.push('/block');
       else if (url?.includes('taqwa')) router.push('/taqwa');
       else if (url?.includes('focus')) router.push('/focus');

@@ -68,24 +68,36 @@ export async function logPrayer(log: PrayerLog) {
   return logs;
 }
 
-/** % Noor : part des 5 prières validées sur les 7 derniers jours. */
+/**
+ * % Noor : part des 5 prières validées sur les 7 derniers jours SANS dispense.
+ * Les jours de dispense (règles, après accouchement) sont neutres : ni comptés, ni pénalisants.
+ */
 export async function noorPercent() {
-  let done = 0;
-  for (let i = 0; i < 7; i++) {
+  const { dispensedDays } = await import('./dispense');
+  const skip = await dispensedDays();
+  let done = 0, days = 0;
+  for (let i = 0; i < 60 && days < 7; i++) {
     const d = new Date();
     d.setDate(d.getDate() - i);
-    done += (await getDayLogs(todayKey(d))).length;
+    const k = todayKey(d);
+    if (skip.has(k)) continue;
+    done += (await getDayLogs(k)).length;
+    days++;
   }
-  return Math.round((done / 35) * 100);
+  return days ? Math.round((done / (days * 5)) * 100) : 0;
 }
 
-/** Streak : jours consécutifs avec les 5 prières (aujourd'hui compte s'il est déjà complet). */
+/** Streak : jours consécutifs avec les 5 prières (aujourd'hui compte s'il est déjà complet). Jours de dispense : neutres. */
 export async function streakDays() {
+  const { dispensedDays } = await import('./dispense');
+  const skip = await dispensedDays();
   let s = 0;
   for (let i = 0; i < 365; i++) {
     const d = new Date();
     d.setDate(d.getDate() - i);
-    const n = (await getDayLogs(todayKey(d))).length;
+    const k = todayKey(d);
+    if (skip.has(k)) continue;
+    const n = (await getDayLogs(k)).length;
     if (n >= PRAYERS.length) s++;
     else if (i === 0) continue;
     else break;
@@ -121,10 +133,13 @@ export const setNotifStyle = (v: NotifStyle) => setJSON('notifStyle', v);
 
 /** Meilleure série depuis un an. */
 export async function bestStreak() {
+  const { dispensedDays } = await import('./dispense');
+  const skip = await dispensedDays();
   let best = 0, cur = 0;
   for (let i = 365; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
+    if (skip.has(todayKey(d))) continue; // jour de dispense : la série continue
     const n = (await getDayLogs(todayKey(d))).length;
     if (n >= PRAYERS.length) { cur++; best = Math.max(best, cur); } else if (i !== 0) cur = 0;
   }

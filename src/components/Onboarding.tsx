@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Defs, G, Path, RadialGradient, Stop } from 'react-native-svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import type { Gender } from '../lib/dispense';
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
 import { Ar, T } from './Text';
@@ -39,6 +40,7 @@ const P = {
 export function Onboarding({ onDone }: { onDone: () => void }) {
   const [step, setStep] = useState(0);
   const [name, setName] = useState('');
+  const [gender, setGenderS] = useState<Gender | null>(null);
   const [prayers, setPrayers] = useState<number | null>(null);
   const [obst, setObst] = useState<Set>({});
   const [hours, setHours] = useState(5);
@@ -46,7 +48,7 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
   const [sworn, setSworn] = useState(false);
 
   const go = useCallback((n: number) => { haptic.tap(); setStep(n); }, []);
-  const ok = step === 1 ? name.trim().length > 0 : step === 2 ? prayers !== null : step === 3 ? Object.values(obst).some(Boolean) : step === 6 ? Object.values(goals).some(Boolean) : true;
+  const ok = step === 1 ? name.trim().length > 0 && gender !== null : step === 2 ? prayers !== null : step === 3 ? Object.values(obst).some(Boolean) : step === 6 ? Object.values(goals).some(Boolean) : true;
   const next = () => {
     if (!ok) return haptic.error();
     if (step < LAST) go(step + 1);
@@ -72,6 +74,7 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
     await AsyncStorage.multiSet([
       [ONBOARDING_KEY, '1'],
       ['profile:name', name.trim()],
+      ['profile:gender', gender ?? ''],
       ['onboarding:answers', JSON.stringify({ prayers, obst, hours, goals, at: new Date().toISOString() })],
     ]);
     await setupNotifications().catch(() => {});
@@ -99,7 +102,19 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
                 <TextInput value={name} onChangeText={(v) => setName(v.slice(0, 24))} placeholder="Ex. Aminata" placeholderTextColor="#6B7183" autoFocus autoCapitalize="words"
                   autoComplete="given-name" textContentType="givenName" returnKeyType="next" onSubmitEditing={next} accessibilityLabel="Ton prénom"
                   style={[st.input, { borderColor: name ? 'rgba(226,192,141,0.6)' : C.line2 }]} />
-                <T style={{ fontSize: 12, color: C.faint, marginTop: 12 }}>Il reste sur ton téléphone.</T>
+                <T style={{ fontSize: 12, color: C.faint, marginTop: 22, marginBottom: 8 }}>Tu es</T>
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                  {([['homme', 'Un frère'], ['femme', 'Une sœur']] as const).map(([k, label]) => {
+                    const on = gender === k;
+                    return (
+                      <Pressable key={k} onPress={() => { haptic.tap(); setGenderS(k); }} accessibilityRole="radio" accessibilityState={{ selected: on }}
+                        style={[st.box, { flex: 1, width: '48%', height: 56 }, on && st.boxOn]}>
+                        <T style={{ fontSize: 15, color: on ? C.goldBright : C.text }}>{label}</T>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+                <T style={{ fontSize: 12, color: C.faint, marginTop: 12 }}>Ces réponses restent sur ton téléphone.</T>
               </Rise>
             </Page>
           )}
