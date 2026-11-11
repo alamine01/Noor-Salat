@@ -44,7 +44,8 @@ const GENTLE: [string, string][] = [
   ['Une invocation', 'Profite de ce moment pour faire une dou‘a.'],
   ['Le rappel apaise', 'C’est par l’évocation d’Allah que les cœurs se tranquillisent.'],
 ];
-const FAJR_RINGS = 30; // iPhone : le réveil du Fajr resonne chaque minute pendant 30 min, jusqu'au scan
+const FAJR_RINGS = 30; // iPhone : Fajr suivant, le réveil resonne chaque minute pendant 30 min (complété à l'ouverture)
+const FAJR_RINGS_FIRST = 90; // prochain Fajr : le réveil resonne pendant tout le créneau (90 min) tant que la prière n'est pas validée
 const DAYS_AHEAD = 7; // on programme une semaine d'avance : l'appli n'a pas besoin d'être ouverte chaque jour
 // iPhone : 64 notifications en attente au maximum (règle d'Apple). On garde les plus proches, le reste est
 // programmé à la prochaine ouverture de l'appli.
@@ -123,12 +124,14 @@ async function scheduleWeek(todayTimes?: Record<PrayerKey, string>) {
   // Android : le son d'une notification dépend de son canal (un canal par adhan).
   const atChannel = adhan === 'none' ? 'prieres' : `adhan-${adhan}-v1`;
   const startDoy = Math.floor(now.getTime() / 86_400_000);
+  let firstFajrChainDone = false;
 
   for (let d = 0; d < DAYS_AHEAD; d++) {
     const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 12);
     const times = d === 0 && todayTimes ? todayTimes : (await loadTimesFor(day)).times;
     const key = dayKey(day);
     let fajrForIos: Date | null = null;
+    let fajrStart: Date | null = null; // début du blocage du Fajr, même s'il est déjà passé (pour ne pas l'arrêter en cours)
 
     for (const [i, p] of PRAYERS.entries()) {
       if (d === 0 && done.includes(p.key)) continue;
@@ -163,28 +166,38 @@ async function scheduleWeek(todayTimes?: Record<PrayerKey, string>) {
     if (fajr.enabled && !(d === 0 && done.includes('Fajr'))) {
       const fajrAt = toDate(times.Fajr, day);
       fajrAt.setMinutes(fajrAt.getMinutes() + fajr.offsetMin);
+      fajrStart = fajrAt;
       if (fajrAt > now) {
         fajrForIos = fajrAt;
         if (NoorBlocker) NoorBlocker.scheduleAlarm(alarmId(day, 5), fajrAt.getTime(), 'fajr', 90);
-        if (realAlarms) {
-          // AlarmKit ne sait pas « resonner tant qu'on n'a pas scanné » : on programme une chaîne de réveils,
-          // un par minute. Arrêter l'un n'arrête pas les suivants ; seuls le scan ou les versets (prière
-          // validée) annulent toute la chaîne. Chaîne complète pour les 2 prochains Fajr (limite raisonnable
-          // du nombre de réveils), un seul réveil au-delà : l'appli complète à chaque ouverture.
-          const n = d < 2 ? FAJR_RINGS : 1;
+        if (!realAlarms) await notify(`fajr-${key}`, fajrAt, { title: 'Réveil Fajr · الفجر', body: 'Lève-toi, la prière vaut mieux que le sommeil.', sound: iosSoundFile(fajr.audio) ?? true, interruptionLevel: 'timeSensitive', data: { url: 'noorsalat://fajr-ring' } }, 3);
+      }
+      if (realAlarms) {
+        // AlarmKit ne sait pas « resonner tant qu'on n'a pas scanné » : chaîne de réveils, un par minute,
+        // pendant tout le créneau du Fajr (90 min) pour le prochain Fajr, 30 min pour le suivant
+        // (complété à chaque ouverture), un seul réveil au-delà. Arrêter un réveil n'arrête pas les
+        // suivants ; seuls le scan ou les versets (prière validée) annulent la chaîne.
+        // Important : on reprogramme AUSSI la suite d'une chaîne déjà commencée (sinon ouvrir l'appli
+        // pendant le réveil faisait disparaître tous les réveils restants de ce matin).
+        const first = !firstFajrChainDone;
+        const n = first ? FAJR_RINGS_FIRST : d < 2 ? FAJR_RINGS : 1;
+        const chainEnd = fajrAt.getTime() + n * 60_000;
+        if (chainEnd > now.getTime()) {
+          firstFajrChainDone = true;
           for (let k = 0; k < n; k++) {
+            const date = new Date(fajrAt.getTime() + k * 60_000);
+            if (date.getTime() <= now.getTime() + 30_000) continue;
             iosAlarms.push({
-              date: new Date(fajrAt.getTime() + k * 60_000),
+              date,
               title: k === 0 ? 'Réveil Fajr · Scanne ton tapis' : 'Fajr · Toujours pas levé ? Scanne ton tapis',
               button: 'Je me lève', sound: iosSoundFile(fajr.audio),
             });
           }
         }
-        else await notify(`fajr-${key}`, fajrAt, { title: 'Réveil Fajr · الفجر', body: 'Lève-toi, la prière vaut mieux que le sommeil.', sound: iosSoundFile(fajr.audio) ?? true, interruptionLevel: 'timeSensitive', data: { url: 'noorsalat://fajr-ring' } }, 3);
       }
     }
 
-    iosPlan.push({ day, times, fajrAt: fajrForIos, skip: d === 0 ? done : [] });
+    iosPlan.push({ day, times, fajrAt: fajrForIos, fajrStart, skip: d === 0 ? done : [] });
 
     // Tahajjud : l'heure choisie, chaque nuit (après minuit = nuit qui suit ce jour).
     // Le premier jour, si on est déjà après minuit, le réveil de cette nuit tombe aujourd'hui même.

@@ -200,7 +200,7 @@ async function scheduleBlock(name: string, start: Date, end: Date, shieldId: str
   await SA().startMonitoring(name, { intervalStart: comp(start), intervalEnd: comp(end), repeats: false }, []);
 }
 
-export type IosPlan = { day: Date; times: Record<PrayerKey, string>; fajrAt: Date | null; skip: PrayerKey[] }[];
+export type IosPlan = { day: Date; times: Record<PrayerKey, string>; fajrAt: Date | null; fajrStart?: Date | null; skip: PrayerKey[] }[];
 
 /**
  * Programme le blocage iOS (prières + réveil Fajr) pour les jours donnés.
@@ -213,13 +213,16 @@ export async function scheduleIosBlocking(plan: IosPlan, opts: { block: boolean;
   // en cours fait appeler sa fin par iOS, donc « débloquer » : ouvrir Noor Salat pendant la prière
   // (bouton « Je vais prier ») libérait les applis sans scan. Seul le scan ou la fin du créneau débloque.
   const running = new Set<string>();
-  for (const { day, times, fajrAt } of plan) {
+  for (const { day, times, fajrAt, fajrStart } of plan) {
     for (const p of ['Dhuhr', 'Asr', 'Maghrib', 'Isha'] as PrayerKey[]) {
       const [h, m] = times[p].split(':').map(Number);
       const start = new Date(day.getFullYear(), day.getMonth(), day.getDate(), h, m + 5).getTime();
       if (now >= start - 60_000 && now < start + BLOCK_MINUTES * 60_000) running.add(prayerActivity(day, p));
     }
-    if (fajrAt && now >= fajrAt.getTime() - 60_000 && now < fajrAt.getTime() + 90 * 60_000) running.add(fajrActivity(fajrAt));
+    // Fajr : on se base sur l'heure du réveil MÊME passée (fajrAt est vide une fois le réveil passé,
+    // ce qui laissait arrêter le blocage du Fajr en cours dès qu'on ouvrait l'appli).
+    const f = fajrStart ?? fajrAt;
+    if (f && now >= f.getTime() - 60_000 && now < f.getTime() + 90 * 60_000) running.add(fajrActivity(f));
   }
   // On arrête nos anciennes activités, sauf le Focus et les blocages en cours.
   const old = safe(() => SA().getActivities(), [] as string[]).filter((a) => a.startsWith(PREFIX) && a !== FOCUS && a !== FOCUS_RESUME && !running.has(a));
