@@ -148,37 +148,41 @@ export default function Compte() {
           <T style={{ fontSize: 11, color: C.faint, textAlign: 'center' }}>Appui long. Ton compte reste, ton téléphone garde son historique.</T>
         </View>
 
-        <Section>Supprimer mon compte</Section>
-        <Card style={{ paddingVertical: 16, gap: 12 }}>
-          <T style={{ fontSize: 13, lineHeight: 20, color: C.soft }}>
-            Ton compte, ton email, tes données en ligne et ta place dans le classement sont effacés définitivement. L’historique déjà enregistré sur ce téléphone est conservé.
-          </T>
-          {!isGuest && (
-            <View style={st.field}>
-              <TextInput value={delPass} onChangeText={setDelPass} placeholder="Ton mot de passe, pour confirmer" placeholderTextColor={C.faint} secureTextEntry
-                autoComplete="current-password" accessibilityLabel="Mot de passe pour supprimer le compte" style={st.input} />
-            </View>
-          )}
-          {delMsg && <T style={{ fontSize: 13, lineHeight: 19, color: delMsg.ok ? C.goldBright : C.warn }}>{delMsg.text}</T>}
-          <View style={{ alignItems: 'center', gap: 8 }}>
-            <HoldButton label="SUPPRIMER MON COMPTE" width={330} duration={2500}
-              onDone={async () => {
-                if (!isGuest && delPass.length < 6) { haptic.error(); setDelMsg({ ok: false, text: 'Entre ton mot de passe pour confirmer la suppression.' }); return; }
-                setDelMsg(null);
-                try {
-                  await deleteAccount(isGuest ? undefined : delPass);
-                  setDelPass('');
-                  haptic.success();
-                  await load();
-                  setDelMsg({ ok: true, text: 'Ton compte et tes données en ligne ont été supprimés.' });
-                } catch (e) {
-                  haptic.error();
-                  setDelMsg({ ok: false, text: authError(e) });
-                }
-              }} />
-            <T style={{ fontSize: 11, color: C.faint, textAlign: 'center' }}>Appui long. Cette action est définitive.</T>
-          </View>
-        </Card>
+        {/* Réservé aux comptes email : un compte invité est une session, pas un compte créé.
+            Pour lui, « Supprimer mes données en ligne » ci-dessus fait déjà le travail. */}
+        {!isGuest && (
+          <>
+            <Section>Supprimer mon compte</Section>
+            <Card style={{ paddingVertical: 16, gap: 12 }}>
+              <T style={{ fontSize: 13, lineHeight: 20, color: C.soft }}>
+                Ton compte, ton email, tes données en ligne et ta place dans le classement sont effacés définitivement. L’historique déjà enregistré sur ce téléphone est conservé.
+              </T>
+              <View style={st.field}>
+                <TextInput value={delPass} onChangeText={setDelPass} placeholder="Ton mot de passe, pour confirmer" placeholderTextColor={C.faint} secureTextEntry
+                  autoComplete="current-password" accessibilityLabel="Mot de passe pour supprimer le compte" style={st.input} />
+              </View>
+              {delMsg && <T style={{ fontSize: 13, lineHeight: 19, color: delMsg.ok ? C.goldBright : C.warn }}>{delMsg.text}</T>}
+              <View style={{ alignItems: 'center', gap: 8 }}>
+                <HoldButton label="SUPPRIMER MON COMPTE" width={330} duration={2500}
+                  onDone={async () => {
+                    if (delPass.length < 6) { haptic.error(); setDelMsg({ ok: false, text: 'Entre ton mot de passe pour confirmer la suppression.' }); return; }
+                    setDelMsg(null);
+                    try {
+                      await deleteAccount(delPass);
+                      setDelPass('');
+                      haptic.success();
+                      await load();
+                      setDelMsg({ ok: true, text: 'Ton compte et tes données en ligne ont été supprimés.' });
+                    } catch (e) {
+                      haptic.error();
+                      setDelMsg({ ok: false, text: authError(e) });
+                    }
+                  }} />
+                <T style={{ fontSize: 11, color: C.faint, textAlign: 'center' }}>Appui long. Cette action est définitive.</T>
+              </View>
+            </Card>
+          </>
+        )}
       </Screen>
     </KeyboardAvoidingView>
   );

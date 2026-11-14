@@ -105,7 +105,7 @@ export function authError(e: unknown) {
   if (code.includes('too-many-requests')) return 'Trop d’essais. Réessaie dans quelques minutes.';
   if (code.includes('network')) return 'Pas de connexion internet.';
   if (code.includes('operation-not-allowed')) return 'La connexion par email n’est pas activée dans Firebase.';
-  if (code.includes('requires-recent-login')) return 'Par sécurité, déconnecte-toi, reconnecte-toi, puis réessaie la suppression.';
+  if (code.includes('requires-recent-login')) return 'Tes données en ligne sont supprimées, mais le compte demande une connexion récente. Déconnecte-toi, reconnecte-toi, puis réessaie.';
   return 'Une erreur est survenue. Réessaie.';
 }
 
