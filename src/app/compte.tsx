@@ -9,7 +9,7 @@ import { Card, HoldButton, PrimaryButton, Row, Segmented, StatusDot, Toggle } fr
 import { C, F } from '../lib/theme';
 import { haptic } from '../lib/haptics';
 import {
-  AccountInfo, CloudPrefs, accountInfo, authError, deleteCloudData, getCloudPrefs, logout, resetPassword,
+  AccountInfo, CloudPrefs, accountInfo, authError, deleteAccount, deleteCloudData, getCloudPrefs, logout, resetPassword,
   saveAccountWithEmail, setCloudPrefs, signInExisting, syncProfile,
 } from '../lib/firebase';
 
@@ -23,6 +23,8 @@ export default function Compte() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [pseudo, setPseudo] = useState('');
+  const [delPass, setDelPass] = useState('');
+  const [delMsg, setDelMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
   const load = useCallback(async () => {
     setInfo(await accountInfo());
@@ -112,7 +114,6 @@ export default function Compte() {
                 <T style={{ fontSize: 13, color: C.gold }}>Mot de passe oublié</T>
               </Pressable>
             )}
-            <T style={{ fontSize: 11, color: C.faint, textAlign: 'center' }}>Connexion avec Google : dans une prochaine version.</T>
           </>
         )}
         {!isGuest && msg && <T style={{ fontSize: 13, color: msg.ok ? C.goldBright : C.warn }}>{msg.text}</T>}
@@ -144,8 +145,40 @@ export default function Compte() {
         <View style={{ alignItems: 'center', gap: 8, marginTop: 6 }}>
           <HoldButton label="SUPPRIMER MES DONNÉES EN LIGNE" width={330} duration={2000}
             onDone={async () => { await deleteCloudData(); await load(); setMsg({ ok: true, text: 'Tes données en ligne ont été supprimées.' }); }} />
-          <T style={{ fontSize: 11, color: C.faint, textAlign: 'center' }}>Appui long. Ton téléphone garde son historique.</T>
+          <T style={{ fontSize: 11, color: C.faint, textAlign: 'center' }}>Appui long. Ton compte reste, ton téléphone garde son historique.</T>
         </View>
+
+        <Section>Supprimer mon compte</Section>
+        <Card style={{ paddingVertical: 16, gap: 12 }}>
+          <T style={{ fontSize: 13, lineHeight: 20, color: C.soft }}>
+            Ton compte, ton email, tes données en ligne et ta place dans le classement sont effacés définitivement. L’historique déjà enregistré sur ce téléphone est conservé.
+          </T>
+          {!isGuest && (
+            <View style={st.field}>
+              <TextInput value={delPass} onChangeText={setDelPass} placeholder="Ton mot de passe, pour confirmer" placeholderTextColor={C.faint} secureTextEntry
+                autoComplete="current-password" accessibilityLabel="Mot de passe pour supprimer le compte" style={st.input} />
+            </View>
+          )}
+          {delMsg && <T style={{ fontSize: 13, lineHeight: 19, color: delMsg.ok ? C.goldBright : C.warn }}>{delMsg.text}</T>}
+          <View style={{ alignItems: 'center', gap: 8 }}>
+            <HoldButton label="SUPPRIMER MON COMPTE" width={330} duration={2500}
+              onDone={async () => {
+                if (!isGuest && delPass.length < 6) { haptic.error(); setDelMsg({ ok: false, text: 'Entre ton mot de passe pour confirmer la suppression.' }); return; }
+                setDelMsg(null);
+                try {
+                  await deleteAccount(isGuest ? undefined : delPass);
+                  setDelPass('');
+                  haptic.success();
+                  await load();
+                  setDelMsg({ ok: true, text: 'Ton compte et tes données en ligne ont été supprimés.' });
+                } catch (e) {
+                  haptic.error();
+                  setDelMsg({ ok: false, text: authError(e) });
+                }
+              }} />
+            <T style={{ fontSize: 11, color: C.faint, textAlign: 'center' }}>Appui long. Cette action est définitive.</T>
+          </View>
+        </Card>
       </Screen>
     </KeyboardAvoidingView>
   );

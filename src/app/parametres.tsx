@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, AppState, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { AppState, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Screen } from '../components/Screen';
 import { PageHeader, Section } from '../components/PageHeader';
@@ -22,9 +22,6 @@ import { AndroidAppPicker, androidPickerAvailable, blockedAppsCount } from '../c
 import { findPlace } from '../lib/places';
 import { Gender, getGender, setGender } from '../lib/dispense';
 import { UpdateInfo } from '../components/UpdateInfo';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Updates from 'expo-updates';
-import { ONBOARDING_KEY } from '../components/Onboarding';
 
 const AUDIO: Record<FajrSettings['audio'], string> = { khayr: 'As-salātu khayrun mina-n-nawm', adhan_fajr: 'Adhan du Fajr', systeme: 'Sonnerie du téléphone' };
 
@@ -158,16 +155,7 @@ export default function Parametres() {
         )}
       </Card>
       <Card>
-        <Row title="Comment ça marche" sub="Les réponses aux questions fréquentes" onPress={() => router.push('/aide')} right={<Icon name="chevron" size={16} color={C.faint} />} />
-        <Row last title="Revoir la présentation" sub="L'accueil du premier lancement" right={<Icon name="chevron" size={16} color={C.faint} />}
-          onPress={() => Alert.alert('Revoir la présentation ?', 'L’appli va redémarrer sur les écrans d’accueil. Tes réponses remplaceront tes réglages actuels (réveil, blocage, rappels).', [
-            { text: 'Annuler', style: 'cancel' },
-            { text: 'Revoir', onPress: async () => {
-              await AsyncStorage.removeItem(ONBOARDING_KEY);
-              // Redémarre l'appli tout de suite ; sinon, au prochain lancement.
-              await Updates.reloadAsync().catch(() => Alert.alert('Presque prêt', 'Ferme complètement Noor Salat puis rouvre-le.'));
-            } },
-          ])} />
+        <Row last title="Comment ça marche" sub="Les réponses aux questions fréquentes" onPress={() => router.push('/aide')} right={<Icon name="chevron" size={16} color={C.faint} />} />
       </Card>
 
       <Section>Lieu</Section>

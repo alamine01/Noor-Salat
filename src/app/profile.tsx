@@ -60,7 +60,6 @@ function QrTab({ id }: { id: string }) {
         <GhostButton title="Plein écran" onPress={() => setBig(true)} style={{ flex: 1 }} />
         <PrimaryButton title="Imprimer" onPress={() => setBig(true)} style={{ flex: 1, height: 50, borderRadius: 16 }} />
       </View>
-      <T style={{ fontSize: 11, color: C.faint }}>Bientôt : un autocollant NFC à la place du QR</T>
       <Modal visible={big} animationType="fade" transparent onRequestClose={() => setBig(false)}>
         <Pressable onPress={() => setBig(false)} style={{ flex: 1, backgroundColor: '#F6EEDC', alignItems: 'center', justifyContent: 'center', gap: 24, padding: 30 }}>
           {id ? <QRCode value={qrPayload(id)} size={280} color="#15120C" backgroundColor="#F6EEDC" ecl="H" /> : null}

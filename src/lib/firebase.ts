@@ -13,8 +13,9 @@ import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import {
-  Auth, EmailAuthProvider, User, createUserWithEmailAndPassword, getAuth, initializeAuth, linkWithCredential,
-  onAuthStateChanged, sendPasswordResetEmail, signInAnonymously, signInWithEmailAndPassword, signOut,
+  Auth, EmailAuthProvider, User, createUserWithEmailAndPassword, deleteUser, getAuth, initializeAuth, linkWithCredential,
+  onAuthStateChanged, reauthenticateWithCredential, sendPasswordResetEmail, signInAnonymously, signInWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth';
 import {
   Firestore, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, writeBatch,
@@ -104,6 +105,7 @@ export function authError(e: unknown) {
   if (code.includes('too-many-requests')) return 'Trop d’essais. Réessaie dans quelques minutes.';
   if (code.includes('network')) return 'Pas de connexion internet.';
   if (code.includes('operation-not-allowed')) return 'La connexion par email n’est pas activée dans Firebase.';
+  if (code.includes('requires-recent-login')) return 'Par sécurité, déconnecte-toi, reconnecte-toi, puis réessaie la suppression.';
   return 'Une erreur est survenue. Réessaie.';
 }
 
@@ -245,6 +247,29 @@ export async function deleteCloudData() {
   batch.delete(doc(r.db, 'users', r.user.uid));
   await batch.commit();
   await setCloudPrefs({ sync: false, leaderboard: false });
+}
+
+/**
+ * Suppression du compte lui-même (exigé par l'App Store dès qu'une appli permet d'en créer un).
+ * Efface d'abord les documents en ligne, puis l'identifiant de connexion : l'email ne reste
+ * nulle part et plus rien ne permet de relier ces données à quelqu'un.
+ * Firebase refuse de supprimer un compte email connecté depuis longtemps, donc on redonne le
+ * mot de passe quand on l'a (sinon l'utilisateur voit le message d'authError et se reconnecte).
+ * Le téléphone garde son historique : c'est à l'utilisateur de le réinitialiser s'il le veut.
+ */
+export async function deleteAccount(password?: string) {
+  const f = init();
+  if (!f) throw new Error('not-configured');
+  await (f.auth as Auth & { authStateReady?: () => Promise<void> }).authStateReady?.();
+  const u = f.auth.currentUser;
+  if (!u) {
+    await setCloudPrefs({ sync: false, leaderboard: false });
+    return;
+  }
+  if (u.email && password) await reauthenticateWithCredential(u, EmailAuthProvider.credential(u.email, password));
+  await deleteCloudData();
+  await deleteUser(u);
+  await setCloudPrefs({ sync: false, leaderboard: false, pseudo: '' });
 }
 
 /* ---------- Classement ---------- */

@@ -156,9 +156,8 @@ function TaqwaFilter() {
 
       <Section>Rester protégé</Section>
       <Card>
-        <Row title="Prévenir si le filtre est coupé" sub="Vérifié à chaque ouverture de l'appli"
+        <Row last title="Prévenir si le filtre est coupé" sub="Vérifié à chaque ouverture de l'appli"
           right={<Toggle value={alert} label="Prévenir si le filtre est coupé" onChange={async (v) => { setAlert(v); const t = await getTaqwa(); await setTaqwa({ ...t, alert: v }); }} />} />
-        <Row last title="Mon garant" sub="Un proche de confiance est prévenu" right={<T style={{ fontSize: 12, color: C.faint }}>Bientôt</T>} />
       </Card>
       <T style={{ fontSize: 11, lineHeight: 17, color: C.faint, textAlign: 'center' }}>Noor Salat n'installe pas de filtre lui-même : il t'aide à activer le filtre gratuit de ton téléphone et vérifie qu'il reste actif.</T>
     </Screen>
