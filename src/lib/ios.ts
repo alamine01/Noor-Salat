@@ -372,10 +372,22 @@ export async function scheduleIosAlarms(alarms: IosAlarm[]) {
   if (!alarmKitAvailable()) return;
   safe(() => NoorAlarm!.cancelAll(), undefined);
   if (!(await alarmKitAuthorized())) return;
-  for (const a of alarms) {
-    if (a.date.getTime() <= Date.now() + 60_000) continue;
-    await NoorAlarm!.schedule(a.date.getTime(), a.title, a.button, a.sound).catch(() => null);
+  // Du plus proche au plus lointain : si iOS refuse au-delà d'un certain nombre de réveils,
+  // ce sont les plus lointains qui manquent (pas le Tahajjud de cette nuit derrière la chaîne du Fajr).
+  const list = alarms.filter((a) => a.date.getTime() > Date.now() + 60_000).sort((x, y) => x.date.getTime() - y.date.getTime());
+  const log: string[] = [];
+  let ok = 0, failed = 0;
+  for (const a of list) {
+    const id = await NoorAlarm!.schedule(a.date.getTime(), a.title, a.button, a.sound).catch(() => null);
+    if (id) ok++; else failed++;
+    if (log.length < 8 || !id) log.push(`${id ? '✓' : '✗'} ${a.date.toLocaleString('fr-FR', { weekday: 'short', hour: '2-digit', minute: '2-digit' })} ${a.title.split(' · ')[0]}`);
   }
+  // Pour le diagnostic caché (Réglages › Blocage, appui long) : ce qui a vraiment été programmé.
+  AsyncStorage.setItem('alarms:log', JSON.stringify({ at: new Date().toISOString(), ok, failed, log: log.slice(0, 14) })).catch(() => {});
+}
+
+export async function alarmsLog(): Promise<{ at: string; ok: number; failed: number; log: string[] } | null> {
+  try { return JSON.parse((await AsyncStorage.getItem('alarms:log')) ?? 'null'); } catch { return null; }
 }
 
 /** Arrête un réveil qui sonne (scan du tapis validé). */

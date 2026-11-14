@@ -10,7 +10,7 @@ import { Backdrop, GhostButton, Ripples, Rise, useBreath, useLoop } from '../com
 import { C, F } from '../lib/theme';
 import { haptic } from '../lib/haptics';
 import { DayTimes, PRAYERS, currentPrayer, loadTodayTimes } from '../lib/prayer';
-import { RAPPELS, Rappel, nextRappel } from '../lib/rappels';
+import { RAPPELS, Rappel, isOwn, nextRappel } from '../lib/rappels';
 
 
 export default function Block() {
@@ -91,9 +91,9 @@ export default function Block() {
         <Rise key={rappel.fr} delay={600} style={{ alignItems: 'center', marginTop: 22, paddingHorizontal: 8 }}>
           {rappel.ar && <Ar style={{ fontSize: 22, lineHeight: 40, color: C.goldBright, textAlign: 'center' }}>{rappel.ar}</Ar>}
           <Text style={{ fontFamily: F.serifItalic, fontSize: 17, lineHeight: 24, color: C.soft, textAlign: 'center', marginTop: 6 }}>
-            « {rappel.fr} »
+            {isOwn(rappel) ? rappel.fr : `« ${rappel.fr.replace(/[«»]/g, '').trim()} »`}
           </Text>
-          <T style={{ fontSize: 11, letterSpacing: 1.6, color: C.faint, marginTop: 6 }}>{rappel.ref.toUpperCase()}</T>
+          {!isOwn(rappel) && <T style={{ fontSize: 11, letterSpacing: 1.6, color: C.faint, marginTop: 6 }}>{rappel.ref.toUpperCase()}</T>}
         </Rise>
 
         <View style={{ flex: 1 }} />

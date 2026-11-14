@@ -10,14 +10,6 @@ export type Rappel = { ar?: string; fr: string; ref: string; pools: ('priere' | 
 
 export const RAPPELS: Rappel[] = [
  {
-  "ar": "ٱلَّذِينَ يُؤۡمِنُونَ بِٱلۡغَيۡبِ وَيُقِيمُونَ ٱلصَّلَوٰةَ وَمِمَّا رَزَقۡنَٰهُمۡ يُنفِقُونَ",
-  "fr": "qui croient à l'invisible et accomplissent la Salât et dépensent (dans l'obéissance à Allah), de ce que Nous leur avons attribué.",
-  "ref": "Al-Baqarah · 2:3",
-  "pools": [
-   "priere"
-  ]
- },
- {
   "ar": "وَأَقِيمُواْ ٱلصَّلَوٰةَ وَءَاتُواْ ٱلزَّكَوٰةَ وَٱرۡكَعُواْ مَعَ ٱلرَّـٰكِعِينَ",
   "fr": "Et accomplissez la Salât, et acquittez la Zakât, et inclinez-vous avec ceux qui s'inclinent.",
   "ref": "Al-Baqarah · 2:43",
@@ -35,22 +27,6 @@ export const RAPPELS: Rappel[] = [
   ]
  },
  {
-  "ar": "وَأَقِيمُواْ ٱلصَّلَوٰةَ وَءَاتُواْ ٱلزَّكَوٰةَۚ وَمَا تُقَدِّمُواْ لِأَنفُسِكُم مِّنۡ خَيۡرٖ تَجِدُوهُ عِندَ ٱللَّهِۗ إِنَّ ٱللَّهَ بِمَا تَعۡمَلُونَ بَصِيرٞ",
-  "fr": "Et accomplissez la Salât et acquittez la Zakât. Et tout ce que vous avancez de bien pour vous-mêmes, vous le retrouverez auprès d'Allah, car Allah voit parfaitement ce que vous faites.",
-  "ref": "Al-Baqarah · 2:110",
-  "pools": [
-   "priere"
-  ]
- },
- {
-  "ar": "وَلِلَّهِ ٱلۡمَشۡرِقُ وَٱلۡمَغۡرِبُۚ فَأَيۡنَمَا تُوَلُّواْ فَثَمَّ وَجۡهُ ٱللَّهِۚ إِنَّ ٱللَّهَ وَٰسِعٌ عَلِيمٞ",
-  "fr": "A Allah seul appartiennent l'Est et l'Ouest. Où que vous vous tourniez, la Face (direction) d'Allah est donc là, car Allah a la grâce immense; Il est Omniscient.",
-  "ref": "Al-Baqarah · 2:115",
-  "pools": [
-   "priere"
-  ]
- },
- {
   "ar": "فَٱذۡكُرُونِيٓ أَذۡكُرۡكُمۡ وَٱشۡكُرُواْ لِي وَلَا تَكۡفُرُونِ",
   "fr": "Souvenez-vous de Moi donc. Je vous récompenserai. Remerciez-Moi et ne soyez pas ingrats envers Moi.",
   "ref": "Al-Baqarah · 2:152",
@@ -65,14 +41,6 @@ export const RAPPELS: Rappel[] = [
   "ref": "Al-Baqarah · 2:153",
   "pools": [
    "priere",
-   "focus"
-  ]
- },
- {
-  "ar": "ٱلَّذِينَ إِذَآ أَصَٰبَتۡهُم مُّصِيبَةٞ قَالُوٓاْ إِنَّا لِلَّهِ وَإِنَّآ إِلَيۡهِ رَٰجِعُونَ",
-  "fr": "qui disent, quand un malheur les atteint: «Certes nous sommes à Allah, et c'est à Lui que nous retournerons.",
-  "ref": "Al-Baqarah · 2:156",
-  "pools": [
    "focus"
   ]
  },
@@ -111,24 +79,8 @@ export const RAPPELS: Rappel[] = [
   ]
  },
  {
-  "ar": "ٱلَّذِينَ يَذۡكُرُونَ ٱللَّهَ قِيَٰمٗا وَقُعُودٗا وَعَلَىٰ جُنُوبِهِمۡ وَيَتَفَكَّرُونَ فِي خَلۡقِ ٱلسَّمَٰوَٰتِ وَٱلۡأَرۡضِ رَبَّنَا مَا خَلَقۡتَ هَٰذَا بَٰطِلٗا سُبۡحَٰنَكَ فَقِنَا عَذَابَ ٱلنَّارِ",
-  "fr": "qui, debout, assis, couchés sur leurs côtés, invoquent Allah et méditent sur la création des cieux et de la terre (disant): «Notre Seigneur! Tu n'as pas créé cela en vain. Gloire à Toi! Garde-nous du châtiment du Feu.",
-  "ref": "Ali 'Imran · 3:191",
-  "pools": [
-   "priere"
-  ]
- },
- {
-  "ar": "يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُواْ ٱصۡبِرُواْ وَصَابِرُواْ وَرَابِطُواْ وَٱتَّقُواْ ٱللَّهَ لَعَلَّكُمۡ تُفۡلِحُونَ",
-  "fr": "O les croyants! Soyez endurants. Incitez-vous à l'endurance. Luttez constamment (contre l'ennemi) et craignez Allah, afin que vous réussissiez.",
-  "ref": "Ali 'Imran · 3:200",
-  "pools": [
-   "focus"
-  ]
- },
- {
-  "ar": "فَإِذَا قَضَيۡتُمُ ٱلصَّلَوٰةَ فَٱذۡكُرُواْ ٱللَّهَ قِيَٰمٗا وَقُعُودٗا وَعَلَىٰ جُنُوبِكُمۡۚ فَإِذَا ٱطۡمَأۡنَنتُمۡ فَأَقِيمُواْ ٱلصَّلَوٰةَۚ إِنَّ ٱلصَّلَوٰةَ كَانَتۡ عَلَى ٱلۡمُؤۡمِنِينَ كِتَٰبٗا مَّوۡقُوتٗا",
-  "fr": "Quand vous avez accompli la Salât, invoquez le nom d'Allah, debout, assis ou couchés sur vos côtés. Puis lorsque vous êtes en sécurité, accomplissez la Salât (normalement), car la Salât demeure, pour les croyants, une prescription, à des temps déterminés.",
+  "ar": "إِنَّ ٱلصَّلَوٰةَ كَانَتۡ عَلَى ٱلۡمُؤۡمِنِينَ كِتَٰبٗا مَّوۡقُوتٗا",
+  "fr": "La Salât demeure, pour les croyants, une prescription, à des temps déterminés.",
   "ref": "An-Nisa · 4:103",
   "pools": [
    "priere"
@@ -145,7 +97,7 @@ export const RAPPELS: Rappel[] = [
  },
  {
   "ar": "قُلۡ إِنَّ صَلَاتِي وَنُسُكِي وَمَحۡيَايَ وَمَمَاتِي لِلَّهِ رَبِّ ٱلۡعَٰلَمِينَ",
-  "fr": "Dis: «En vérité, ma Salât, mes actes de dévotion, ma vie et ma mort appartiennent à Allah, Seigneur de l'Univers.",
+  "fr": "Dis: «En vérité, ma Salât, mes actes de dévotion, ma vie et ma mort appartiennent à Allah, Seigneur de l'Univers. »",
   "ref": "Al-An'am · 6:162",
   "pools": [
    "priere"
@@ -178,34 +130,9 @@ export const RAPPELS: Rappel[] = [
   ]
  },
  {
-  "ar": "ٱلَّذِينَ ءَامَنُواْ وَتَطۡمَئِنُّ قُلُوبُهُم بِذِكۡرِ ٱللَّهِۗ أَلَا بِذِكۡرِ ٱللَّهِ تَطۡمَئِنُّ ٱلۡقُلُوبُ",
-  "fr": "ceux qui ont cru, et dont les cœurs se tranquillisent à l'évocation d'Allah». Certes, c'est par l'évocation d'Allah que les cœurs se tranquillisent.",
-  "ref": "Ar-Ra'd · 13:28",
-  "pools": [
-   "priere",
-   "focus"
-  ]
- },
- {
-  "ar": "وَإِذۡ تَأَذَّنَ رَبُّكُمۡ لَئِن شَكَرۡتُمۡ لَأَزِيدَنَّكُمۡۖ وَلَئِن كَفَرۡتُمۡ إِنَّ عَذَابِي لَشَدِيدٞ",
-  "fr": "Et lorsque votre Seigneur proclama: «Si vous êtes reconnaissants, très certainement J'augmenterai [Mes bienfaits] pour vous. Mais si vous êtes ingrats, Mon châtiment sera terrible»",
-  "ref": "Ibrahim · 14:7",
-  "pools": [
-   "focus"
-  ]
- },
- {
   "ar": "رَبِّ ٱجۡعَلۡنِي مُقِيمَ ٱلصَّلَوٰةِ وَمِن ذُرِّيَّتِيۚ رَبَّنَا وَتَقَبَّلۡ دُعَآءِ",
   "fr": "O mon Seigneur! Fais que j'accomplisse assidûment la Salât ainsi qu'une partie de ma descendance; exauce ma prière, ô notre Seigneur.",
   "ref": "Ibrahim · 14:40",
-  "pools": [
-   "priere"
-  ]
- },
- {
-  "ar": "وَٱعۡبُدۡ رَبَّكَ حَتَّىٰ يَأۡتِيَكَ ٱلۡيَقِينُ",
-  "fr": "et adore ton Seigneur jusqu'à ce que te vienne la certitude (la mort).",
-  "ref": "Al-Hijr · 15:99",
   "pools": [
    "priere"
   ]
@@ -227,22 +154,6 @@ export const RAPPELS: Rappel[] = [
   ]
  },
  {
-  "ar": "أَقِمِ ٱلصَّلَوٰةَ لِدُلُوكِ ٱلشَّمۡسِ إِلَىٰ غَسَقِ ٱلَّيۡلِ وَقُرۡءَانَ ٱلۡفَجۡرِۖ إِنَّ قُرۡءَانَ ٱلۡفَجۡرِ كَانَ مَشۡهُودٗا",
-  "fr": "Accomplis la Salât au déclin du soleil jusqu'à l'obscurité de la nuit, et [fais] aussi la Lecture à l'aube, car la Lecture à l'aube a des témoins.",
-  "ref": "Al-Isra · 17:78",
-  "pools": [
-   "priere"
-  ]
- },
- {
-  "ar": "وَمِنَ ٱلَّيۡلِ فَتَهَجَّدۡ بِهِۦ نَافِلَةٗ لَّكَ عَسَىٰٓ أَن يَبۡعَثَكَ رَبُّكَ مَقَامٗا مَّحۡمُودٗا",
-  "fr": "Et de la nuit consacre une partie [avant l'aube] pour des Salât surérogatoires: afin que ton Seigneur te ressuscite en une position de gloire.",
-  "ref": "Al-Isra · 17:79",
-  "pools": [
-   "priere"
-  ]
- },
- {
   "ar": "ٱلۡمَالُ وَٱلۡبَنُونَ زِينَةُ ٱلۡحَيَوٰةِ ٱلدُّنۡيَاۖ وَٱلۡبَٰقِيَٰتُ ٱلصَّـٰلِحَٰتُ خَيۡرٌ عِندَ رَبِّكَ ثَوَابٗا وَخَيۡرٌ أَمَلٗا",
   "fr": "Les biens et les enfants sont l'ornement de la vie de ce monde. Cependant, les bonnes œuvres qui persistent ont auprès de ton Seigneur une meilleure récompense et [suscitent] une belle espérance.",
   "ref": "Al-Kahf · 18:46",
@@ -251,34 +162,9 @@ export const RAPPELS: Rappel[] = [
   ]
  },
  {
-  "ar": "۞فَخَلَفَ مِنۢ بَعۡدِهِمۡ خَلۡفٌ أَضَاعُواْ ٱلصَّلَوٰةَ وَٱتَّبَعُواْ ٱلشَّهَوَٰتِۖ فَسَوۡفَ يَلۡقَوۡنَ غَيًّا",
-  "fr": "Puis leur succédèrent des générations qui délaissèrent la prière et suivirent leurs passions. Ils se trouveront en perdition.",
-  "ref": "Maryam · 19:59",
-  "pools": [
-   "priere"
-  ]
- },
- {
   "ar": "إِنَّنِيٓ أَنَا ٱللَّهُ لَآ إِلَٰهَ إِلَّآ أَنَا۠ فَٱعۡبُدۡنِي وَأَقِمِ ٱلصَّلَوٰةَ لِذِكۡرِيٓ",
   "fr": "Certes, c'est Moi Allah: point de divinité que Moi. Adore-Moi donc et accomplis la Salât pour te souvenir de Moi.",
   "ref": "Taha · 20:14",
-  "pools": [
-   "priere"
-  ]
- },
- {
-  "ar": "وَمَنۡ أَعۡرَضَ عَن ذِكۡرِي فَإِنَّ لَهُۥ مَعِيشَةٗ ضَنكٗا وَنَحۡشُرُهُۥ يَوۡمَ ٱلۡقِيَٰمَةِ أَعۡمَىٰ",
-  "fr": "Et quiconque se détourne de Mon Rappel, mènera certes, une vie pleine de gêne, et le Jour de la Résurrection Nous l'amènerons aveugle au rassemblement»",
-  "ref": "Taha · 20:124",
-  "pools": [
-   "priere",
-   "focus"
-  ]
- },
- {
-  "ar": "فَٱصۡبِرۡ عَلَىٰ مَا يَقُولُونَ وَسَبِّحۡ بِحَمۡدِ رَبِّكَ قَبۡلَ طُلُوعِ ٱلشَّمۡسِ وَقَبۡلَ غُرُوبِهَاۖ وَمِنۡ ءَانَآيِٕ ٱلَّيۡلِ فَسَبِّحۡ وَأَطۡرَافَ ٱلنَّهَارِ لَعَلَّكَ تَرۡضَىٰ",
-  "fr": "Supporte patiemment ce qu'ils disent et célèbre Sa louange, avant le lever du soleil, avant son coucher et pendant la nuit; et exalte Sa Gloire aux extrémités du jour. Peut-être auras-tu satisfaction.",
-  "ref": "Taha · 20:130",
   "pools": [
    "priere"
   ]
@@ -317,44 +203,11 @@ export const RAPPELS: Rappel[] = [
   ]
  },
  {
-  "ar": "وَٱلَّذِينَ هُمۡ عَلَىٰ صَلَوَٰتِهِمۡ يُحَافِظُونَ",
-  "fr": "et qui observent strictement leur Salât.",
-  "ref": "Al-Mu'minun · 23:9",
-  "pools": [
-   "priere"
-  ]
- },
- {
-  "ar": "رِجَالٞ لَّا تُلۡهِيهِمۡ تِجَٰرَةٞ وَلَا بَيۡعٌ عَن ذِكۡرِ ٱللَّهِ وَإِقَامِ ٱلصَّلَوٰةِ وَإِيتَآءِ ٱلزَّكَوٰةِ يَخَافُونَ يَوۡمٗا تَتَقَلَّبُ فِيهِ ٱلۡقُلُوبُ وَٱلۡأَبۡصَٰرُ",
-  "fr": "des hommes que ni le négoce, ni le troc ne distraient de l'invocation d'Allah, de l'accomplissement de la Salât et de l'acquittement de la Zakât, et qui redoutent un Jour où les cœurs seront bouleversés ainsi que les regards.",
-  "ref": "An-Nur · 24:37",
-  "pools": [
-   "priere",
-   "focus"
-  ]
- },
- {
-  "ar": "وَأَقِيمُواْ ٱلصَّلَوٰةَ وَءَاتُواْ ٱلزَّكَوٰةَ وَأَطِيعُواْ ٱلرَّسُولَ لَعَلَّكُمۡ تُرۡحَمُونَ",
-  "fr": "Accomplissez la Salât, acquittez la Zakât et obéissez au messager, afin que vous ayez la miséricorde.",
-  "ref": "An-Nur · 24:56",
-  "pools": [
-   "priere"
-  ]
- },
- {
   "ar": "وَعِبَادُ ٱلرَّحۡمَٰنِ ٱلَّذِينَ يَمۡشُونَ عَلَى ٱلۡأَرۡضِ هَوۡنٗا وَإِذَا خَاطَبَهُمُ ٱلۡجَٰهِلُونَ قَالُواْ سَلَٰمٗا",
   "fr": "Les serviteurs du Tout Miséricordieux sont ceux qui marchent humblement sur terre, qui, lorsque les ignorants s'adressent à eux, disent: «Paix»",
   "ref": "Al-Furqan · 25:63",
   "pools": [
    "focus"
-  ]
- },
- {
-  "ar": "وَٱلَّذِينَ يَبِيتُونَ لِرَبِّهِمۡ سُجَّدٗا وَقِيَٰمٗا",
-  "fr": "qui passent les nuits prosternés et debout devant leur Seigneur.",
-  "ref": "Al-Furqan · 25:64",
-  "pools": [
-   "priere"
   ]
  },
  {
@@ -399,28 +252,12 @@ export const RAPPELS: Rappel[] = [
   ]
  },
  {
-  "ar": "تَتَجَافَىٰ جُنُوبُهُمۡ عَنِ ٱلۡمَضَاجِعِ يَدۡعُونَ رَبَّهُمۡ خَوۡفٗا وَطَمَعٗا وَمِمَّا رَزَقۡنَٰهُمۡ يُنفِقُونَ",
-  "fr": "Ils s'arrachent de leurs lits pour invoquer leur Seigneur, par crainte et espoir; et ils font largesse de ce que Nous leur attribuons.",
-  "ref": "As-Sajdah · 32:16",
-  "pools": [
-   "priere"
-  ]
- },
- {
   "ar": "يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُواْ ٱذۡكُرُواْ ٱللَّهَ ذِكۡرٗا كَثِيرٗا وَسَبِّحُوهُ بُكۡرَةٗ وَأَصِيلًا",
   "fr": "O vous qui croyez! Evoquez Allah d'une façon abondante et glorifiez-Le à la pointe et au déclin du jour.",
   "ref": "Al-Ahzab · 33:41-42",
   "pools": [
    "priere",
    "focus"
-  ]
- },
- {
-  "ar": "أَمَّنۡ هُوَ قَٰنِتٌ ءَانَآءَ ٱلَّيۡلِ سَاجِدٗا وَقَآئِمٗا يَحۡذَرُ ٱلۡأٓخِرَةَ وَيَرۡجُواْ رَحۡمَةَ رَبِّهِۦۗ قُلۡ هَلۡ يَسۡتَوِي ٱلَّذِينَ يَعۡلَمُونَ وَٱلَّذِينَ لَا يَعۡلَمُونَۗ إِنَّمَا يَتَذَكَّرُ أُوْلُواْ ٱلۡأَلۡبَٰبِ",
-  "fr": "Est-ce que celui qui, aux heures de la nuit, reste en dévotion, prosterné et debout, prenant garde à l'au-delà et espérant la miséricorde de son Seigneur…. Dis: «Sont-ils égaux, ceux qui savent et ceux qui ne savent pas?» Seuls les doués d'intelligence se rappellent.",
-  "ref": "Az-Zumar · 39:9",
-  "pools": [
-   "priere"
   ]
  },
  {
@@ -438,14 +275,6 @@ export const RAPPELS: Rappel[] = [
   "pools": [
    "priere",
    "focus"
-  ]
- },
- {
-  "ar": "وَقَالَ رَبُّكُمُ ٱدۡعُونِيٓ أَسۡتَجِبۡ لَكُمۡۚ إِنَّ ٱلَّذِينَ يَسۡتَكۡبِرُونَ عَنۡ عِبَادَتِي سَيَدۡخُلُونَ جَهَنَّمَ دَاخِرِينَ",
-  "fr": "Et votre Seigneur dit: «Appelez-Moi, Je vous répondrai. Ceux qui, par orgueil, se refusent à M'adorer entreront bientôt dans l'Enfer, humiliés»",
-  "ref": "Ghafir · 40:60",
-  "pools": [
-   "priere"
   ]
  },
  {
@@ -492,53 +321,11 @@ export const RAPPELS: Rappel[] = [
   ]
  },
  {
-  "ar": "وَلَا تَكُونُواْ كَٱلَّذِينَ نَسُواْ ٱللَّهَ فَأَنسَىٰهُمۡ أَنفُسَهُمۡۚ أُوْلَـٰٓئِكَ هُمُ ٱلۡفَٰسِقُونَ",
-  "fr": "Et ne soyez pas comme ceux qui ont oublié Allah; [Allah] leur a fait alors oublier leurs propres personnes; ceux-là sont les pervers.",
-  "ref": "Al-Hashr · 59:19",
-  "pools": [
-   "priere",
-   "focus"
-  ]
- },
- {
-  "ar": "يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوٓاْ إِذَا نُودِيَ لِلصَّلَوٰةِ مِن يَوۡمِ ٱلۡجُمُعَةِ فَٱسۡعَوۡاْ إِلَىٰ ذِكۡرِ ٱللَّهِ وَذَرُواْ ٱلۡبَيۡعَۚ ذَٰلِكُمۡ خَيۡرٞ لَّكُمۡ إِن كُنتُمۡ تَعۡلَمُونَ",
-  "fr": "O vous qui avez cru! Quand on appelle à la Salât du jour du Vendredi, accourez à l'invocation d'Allah et laissez tout négoce. Cela est bien meilleur pour vous, si vous saviez.",
-  "ref": "Al-Jumu'ah · 62:9",
-  "pools": [
-   "priere"
-  ]
- },
- {
-  "ar": "فَإِذَا قُضِيَتِ ٱلصَّلَوٰةُ فَٱنتَشِرُواْ فِي ٱلۡأَرۡضِ وَٱبۡتَغُواْ مِن فَضۡلِ ٱللَّهِ وَٱذۡكُرُواْ ٱللَّهَ كَثِيرٗا لَّعَلَّكُمۡ تُفۡلِحُونَ",
-  "fr": "Puis quand la Salât est achevée, dispersez-vous sur terre et recherchez [quelque effet] de la grâce d'Allah, et invoquez beaucoup Allah afin que vous réussissiez.",
-  "ref": "Al-Jumu'ah · 62:10",
-  "pools": [
-   "priere",
-   "focus"
-  ]
- },
- {
   "ar": "يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُواْ لَا تُلۡهِكُمۡ أَمۡوَٰلُكُمۡ وَلَآ أَوۡلَٰدُكُمۡ عَن ذِكۡرِ ٱللَّهِۚ وَمَن يَفۡعَلۡ ذَٰلِكَ فَأُوْلَـٰٓئِكَ هُمُ ٱلۡخَٰسِرُونَ",
   "fr": "O vous qui avez cru! Que ni vos biens ni vos enfants ne vous distraient du rappel d'Allah. Et quiconque fait cela…. alors ceux-là seront les perdants.",
   "ref": "Al-Munafiqun · 63:9",
   "pools": [
    "priere",
-   "focus"
-  ]
- },
- {
-  "ar": "فَٱتَّقُواْ ٱللَّهَ مَا ٱسۡتَطَعۡتُمۡ وَٱسۡمَعُواْ وَأَطِيعُواْ وَأَنفِقُواْ خَيۡرٗا لِّأَنفُسِكُمۡۗ وَمَن يُوقَ شُحَّ نَفۡسِهِۦ فَأُوْلَـٰٓئِكَ هُمُ ٱلۡمُفۡلِحُونَ",
-  "fr": "Craignez Allah, donc autant que vous pouvez, écoutez, obéissez et faites largesses. Ce sera un bien pour vous. Et quiconque a été protégé contre sa propre avidité…. ceux-là sont ceux qui réussissent.",
-  "ref": "At-Taghabun · 64:16",
-  "pools": [
-   "focus"
-  ]
- },
- {
-  "ar": "وَيَرۡزُقۡهُ مِنۡ حَيۡثُ لَا يَحۡتَسِبُۚ وَمَن يَتَوَكَّلۡ عَلَى ٱللَّهِ فَهُوَ حَسۡبُهُۥٓۚ إِنَّ ٱللَّهَ بَٰلِغُ أَمۡرِهِۦۚ قَدۡ جَعَلَ ٱللَّهُ لِكُلِّ شَيۡءٖ قَدۡرٗا",
-  "fr": "et lui accordera Ses dons par [des moyens] sur lesquels il ne comptait pas. Et quiconque place sa confiance en Allah, Il [Allah] lui suffit. Allah atteint ce qu'Il Se propose, et Allah a assigné une mesure à chaque chose.",
-  "ref": "At-Talaq · 65:3",
-  "pools": [
    "focus"
   ]
  },
@@ -552,44 +339,12 @@ export const RAPPELS: Rappel[] = [
   ]
  },
  {
-  "ar": "إِلَّا ٱلۡمُصَلِّينَ ٱلَّذِينَ هُمۡ عَلَىٰ صَلَاتِهِمۡ دَآئِمُونَ",
-  "fr": "Sauf ceux qui pratiquent la Salât qui sont assidus à leurs Salâts.",
-  "ref": "Al-Ma'arij · 70:22-23",
-  "pools": [
-   "priere"
-  ]
- },
- {
-  "ar": "وَٱلَّذِينَ هُمۡ عَلَىٰ صَلَاتِهِمۡ يُحَافِظُونَ",
-  "fr": "et qui sont réguliers dans leur Salât.",
-  "ref": "Al-Ma'arij · 70:34",
-  "pools": [
-   "priere"
-  ]
- },
- {
   "ar": "وَٱذۡكُرِ ٱسۡمَ رَبِّكَ وَتَبَتَّلۡ إِلَيۡهِ تَبۡتِيلٗا",
   "fr": "Et rappelle-toi le nom de ton Seigneur et consacre-toi totalement à Lui.",
   "ref": "Al-Muzzammil · 73:8",
   "pools": [
    "priere",
    "focus"
-  ]
- },
- {
-  "ar": "مَا سَلَكَكُمۡ فِي سَقَرَ قَالُواْ لَمۡ نَكُ مِنَ ٱلۡمُصَلِّينَ",
-  "fr": "«Qu'est-ce qui vous a acheminés à Saqar?» Ils diront: «Nous n'étions pas de ceux qui faisaient la Salât.",
-  "ref": "Al-Muddaththir · 74:42-43",
-  "pools": [
-   "priere"
-  ]
- },
- {
-  "ar": "وَٱذۡكُرِ ٱسۡمَ رَبِّكَ بُكۡرَةٗ وَأَصِيلٗا وَمِنَ ٱلَّيۡلِ فَٱسۡجُدۡ لَهُۥ وَسَبِّحۡهُ لَيۡلٗا طَوِيلًا",
-  "fr": "Et invoque le nom de ton Seigneur, matin et après-midi et prosterne-toi devant Lui une partie de la nuit; et glorifie-Le de longues [heures] pendant la nuit.",
-  "ref": "Al-Insan · 76:25-26",
-  "pools": [
-   "priere"
   ]
  },
  {
@@ -619,36 +374,12 @@ export const RAPPELS: Rappel[] = [
   ]
  },
  {
-  "ar": "فَإِنَّ مَعَ ٱلۡعُسۡرِ يُسۡرًا إِنَّ مَعَ ٱلۡعُسۡرِ يُسۡرٗا",
-  "fr": "A côté de la difficulté est, certes, une facilité A côté de la difficulté est, certes, une facilité.",
-  "ref": "Ash-Sharh · 94:5-6",
-  "pools": [
-   "focus"
-  ]
- },
- {
   "ar": "فَإِذَا فَرَغۡتَ فَٱنصَبۡ وَإِلَىٰ رَبِّكَ فَٱرۡغَب",
   "fr": "Quand tu te libères, donc, lève-toi et à ton Seigneur aspire.",
   "ref": "Ash-Sharh · 94:7-8",
   "pools": [
    "priere",
    "focus"
-  ]
- },
- {
-  "ar": "كَلَّا لَا تُطِعۡهُ وَٱسۡجُدۡۤ وَٱقۡتَرِب۩",
-  "fr": "Non! Ne lui obéis pas; mais prosterne-toi et rapproche-toi.",
-  "ref": "Al-'Alaq · 96:19",
-  "pools": [
-   "priere"
-  ]
- },
- {
-  "ar": "وَمَآ أُمِرُوٓاْ إِلَّا لِيَعۡبُدُواْ ٱللَّهَ مُخۡلِصِينَ لَهُ ٱلدِّينَ حُنَفَآءَ وَيُقِيمُواْ ٱلصَّلَوٰةَ وَيُؤۡتُواْ ٱلزَّكَوٰةَۚ وَذَٰلِكَ دِينُ ٱلۡقَيِّمَةِ",
-  "fr": "Il ne leur a été commandé, cependant, que d'adorer Allah, Lui vouant un culte exclusif, d'accomplir la Salât et d'acquitter la Zakât. Et voilà la religion de droiture.",
-  "ref": "Al-Bayyinah · 98:5",
-  "pools": [
-   "priere"
   ]
  },
  {
@@ -682,14 +413,6 @@ export const RAPPELS: Rappel[] = [
   "ar": "فَوَيۡلٞ لِّلۡمُصَلِّينَ ٱلَّذِينَ هُمۡ عَن صَلَاتِهِمۡ سَاهُونَ",
   "fr": "Malheur donc, à ceux qui prient tout en négligeant (et retardant) leur Salât.",
   "ref": "Al-Ma'un · 107:4-5",
-  "pools": [
-   "priere"
-  ]
- },
- {
-  "ar": "فَصَلِّ لِرَبِّكَ وَٱنۡحَرۡ",
-  "fr": "Accomplis la Salât pour ton Seigneur et sacrifie.",
-  "ref": "Al-Kawthar · 108:2",
   "pools": [
    "priere"
   ]
@@ -773,7 +496,7 @@ export const RAPPELS: Rappel[] = [
   ]
  },
  {
-  "fr": "Personne ne t'a jamais regretté d'avoir prié à l'heure.",
+  "fr": "Personne n'a jamais regretté d'avoir prié à l'heure.",
   "ref": "Noor Salat",
   "pools": [
    "priere"
@@ -843,13 +566,6 @@ export const RAPPELS: Rappel[] = [
   ]
  },
  {
-  "fr": "Prie avant qu'on ne prie sur toi.",
-  "ref": "Noor Salat",
-  "pools": [
-   "priere"
-  ]
- },
- {
   "fr": "La vidéo sera encore là. Cette prière, à cette heure, ne reviendra pas.",
   "ref": "Noor Salat",
   "pools": [
@@ -886,13 +602,6 @@ export const RAPPELS: Rappel[] = [
  },
  {
   "fr": "Ta série Noor t'attend. Ne la casse pas pour un écran.",
-  "ref": "Noor Salat",
-  "pools": [
-   "priere"
-  ]
- },
- {
-  "fr": "Les gens de la mosquée ne sont pas plus occupés que toi. Ils ont juste choisi.",
   "ref": "Noor Salat",
   "pools": [
    "priere"
@@ -1099,7 +808,7 @@ export const RAPPELS: Rappel[] = [
   ]
  },
  {
-  "fr": "Astaghfirullah. Un mot léger sur la langue, lourd dans la balance.",
+  "fr": "Astaghfirullah : un mot léger, et une porte ouverte vers le pardon d'Allah.",
   "ref": "Noor Salat",
   "pools": [
    "priere",
@@ -1119,14 +828,6 @@ export const RAPPELS: Rappel[] = [
   "ref": "Noor Salat",
   "pools": [
    "priere"
-  ]
- },
- {
-  "fr": "Le Fajr gagné commence la veille, en éteignant l'écran à temps.",
-  "ref": "Noor Salat",
-  "pools": [
-   "priere",
-   "focus"
   ]
  },
  {
@@ -1191,7 +892,10 @@ export async function nextRappel(p: Pool = 'priere'): Promise<Rappel> {
 }
 
 /** Textes pour l'écran Apple (iPhone) : texte simple seulement, et assez court pour tenir sans être coupé. */
-export const shieldTexts = (p: Pool) => pool(p).filter((r) => r.fr.length <= 190).map((r) => `${quote(r.fr)}\n— ${r.ref}`);
+export const shieldTexts = (p: Pool) => pool(p).filter((r) => r.fr.length <= 190).map((r) => (isOwn(r) ? r.fr : `${quote(r.fr)}\n— ${r.ref}`));
+
+/** Texte écrit pour l'appli (pas une citation) : affiché sans guillemets ni source. */
+export const isOwn = (r: Rappel) => r.ref === 'Noor Salat';
 
 /** Met le texte entre « », sans doubler ceux que la traduction contient déjà (paroles rapportées). */
 function quote(t: string) {

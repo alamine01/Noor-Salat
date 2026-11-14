@@ -12,6 +12,18 @@
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+  <!-- Android 11+ : voir les applis installées (celles qui ont une icône) pour choisir quoi mettre en pause. -->
+  <queries>
+    <intent>
+      <action android:name="android.intent.action.MAIN" />
+      <category android:name="android.intent.category.LAUNCHER" />
+    </intent>
+    <intent>
+      <action android:name="android.intent.action.MAIN" />
+      <category android:name="android.intent.category.HOME" />
+    </intent>
+  </queries>
+
   <application>
     <service
         android:name="com.noorsalat.blocker.PrayerGuardService"
@@ -21,6 +33,14 @@
           android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
           android:value="Rappel de prière : garde l'écran de prière au premier plan jusqu'au scan du tapis" />
     </service>
+    <!-- Écran « appli en pause » (comme l'écran Apple sur iPhone). -->
+    <activity
+        android:name="com.noorsalat.blocker.ShieldActivity"
+        android:exported="false"
+        android:excludeFromRecents="true"
+        android:launchMode="singleTop"
+        android:screenOrientation="portrait"
+        android:theme="@android:style/Theme.Material.NoActionBar" />
     <receiver android:name="com.noorsalat.blocker.PrayerAlarmReceiver" android:exported="false" />
     <receiver android:name="com.noorsalat.blocker.BootReceiver" android:exported="true">
       <intent-filter>

@@ -18,6 +18,7 @@ import { ADHANS } from '../lib/alarm';
 import { canReallyBlock, permissionsStatus, scheduleDay, testBlockNow } from '../lib/blocker';
 import { NoorBlocker } from '../../modules/noor-blocker';
 import { IosBlocking } from '../components/IosBlocking';
+import { AndroidAppPicker, androidPickerAvailable, blockedAppsCount } from '../components/AndroidAppPicker';
 import { findPlace } from '../lib/places';
 import { Gender, getGender, setGender } from '../lib/dispense';
 import { UpdateInfo } from '../components/UpdateInfo';
@@ -29,6 +30,8 @@ const AUDIO: Record<FajrSettings['audio'], string> = { khayr: 'As-salātu khayru
 
 /** Réglages : ville, ajustements, méthode, blocage et autorisations. Chaque changement reprogramme les rappels. */
 export default function Parametres() {
+  const [appPicker, setAppPicker] = useState(false);
+  const [appCount, setAppCount] = useState(() => blockedAppsCount());
   const [place, setPlace] = useState<PlaceSetting>('gps');
   const [level, setLevel] = useState<FocusLevel>(FOCUS_LEVELS.moyen);
   const [focusOn, setFocusOn] = useState(false);
@@ -232,6 +235,11 @@ export default function Parametres() {
         <>
           <Card>
             <Row title="Bloquer les applis" sub="5 min après l'adhan, jusqu'au scan du tapis" right={<Toggle value={block} onChange={toggleBlock} label="Bloquer les applis" />} />
+            {androidPickerAvailable() && (
+              <Row title="Applis à mettre en pause" sub={appCount ? `${appCount} appli${appCount > 1 ? 's' : ''} choisie${appCount > 1 ? 's' : ''} · les autres restent libres` : 'Toutes (mode strict) · touche pour choisir'}
+                icon={<StatusDot ok={appCount > 0} />} onPress={() => setAppPicker(true)}
+                right={<T style={{ fontSize: 13, color: C.goldBright }}>{appCount ? 'Modifier' : 'Choisir'}</T>} />
+            )}
             {perms.map((p, i) => (
               <Row key={p.name} last={i === perms.length - 1} title={p.name} sub={p.why} icon={<StatusDot ok={p.ok} />}
                 onPress={p.ok ? undefined : p.open}
@@ -239,6 +247,7 @@ export default function Parametres() {
             ))}
           </Card>
           <T style={{ fontSize: 12, lineHeight: 18, color: C.dim, marginTop: -6, marginHorizontal: 4 }}>Tecno, Infinix, Xiaomi, Samsung : sans la dernière ligne, le téléphone peut couper Noor Salat en arrière-plan.</T>
+          <AndroidAppPicker visible={appPicker} onClose={(n) => { setAppPicker(false); setAppCount(n); }} />
         </>
       ) : Platform.OS === 'ios' ? (
         <IosBlocking block={block} onToggleBlock={toggleBlock} onChanged={reload} />

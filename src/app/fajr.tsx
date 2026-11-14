@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Animated, Pressable, StyleSheet, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native';
 import { createAudioPlayer, AudioPlayer } from 'expo-audio';
 import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
@@ -27,6 +27,7 @@ const AUDIOS: { key: FajrSettings['audio']; title: string; note: string }[] = [
 
 /** Réglages du réveil Fajr. */
 export default function Fajr() {
+  const insetBottom = useSafeAreaInsets().bottom;
   const [s, setS] = useState<FajrSettings | null>(null);
   const [fajrTime, setFajrTime] = useState('--:--');
   const [playing, setPlaying] = useState<string | null>(null);
@@ -79,7 +80,7 @@ export default function Fajr() {
         </Svg>
       </Animated.View>
       <SafeAreaView edges={['top']} style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 40, gap: 18 }} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 40 + insetBottom, gap: 18 }} showsVerticalScrollIndicator={false}>
           <PageHeader title="Réveil Fajr" subtitle="Lève-toi pour la lumière"
             right={<Toggle value={!!s?.enabled} onChange={(v) => update({ enabled: v })} label="Activer le réveil" />} />
 
@@ -118,7 +119,9 @@ export default function Fajr() {
               );
             })}
           </Card>
-          <T style={{ fontSize: 12, lineHeight: 18, color: C.dim, marginTop: -6, marginHorizontal: 4 }}>Le volume monte doucement, avec vibration et flash. Il ne s'arrête qu'après le scan du tapis.{isIOS ? ' Sur iPhone, le réveil joue les 30 premières secondes en boucle (règle d’Apple).' : ''}</T>
+          <T style={{ fontSize: 12, lineHeight: 18, color: C.dim, marginTop: -6, marginHorizontal: 4 }}>{isIOS
+            ? 'Sur iPhone, c’est un vrai réveil d’Apple : il sonne au volume de la sonnerie, même en silencieux, et resonne chaque minute jusqu’à la validation de ta prière. Pour le son le plus fort, choisis « Sonnerie du téléphone ».'
+            : 'Le volume monte doucement, avec vibration et flash. Il ne s’arrête qu’après le scan du tapis.'}</T>
 
           {isIOS && (
             <Card>

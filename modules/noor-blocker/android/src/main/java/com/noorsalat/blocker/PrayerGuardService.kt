@@ -40,8 +40,12 @@ class PrayerGuardService : Service() {
       // On garde la dernière appli vue : si aucun événement récent, elle est toujours au premier plan.
       val top = topPackage(this@PrayerGuardService) ?: lastTop
       lastTop = top
-      if (top != null && top != packageName && top !in ALLOWED) {
-        bringBack()
+      // Liste choisie par l'utilisateur : on ne bloque que ces applis. Liste vide : toutes (mode strict).
+      val blocked = getBlocked(this@PrayerGuardService)
+      // L'écran d'accueil du téléphone reste accessible (sinon « Fermer » ne mènerait nulle part), sauf au réveil Fajr.
+      if (top != null && top != packageName && top !in ALLOWED && (kind == "fajr" || top != homePackage()) && (blocked.isEmpty() || top in blocked)) {
+        // Réveil Fajr : l'écran du réveil. Prière et Focus : l'écran « appli en pause », comme sur iPhone.
+        if (kind == "fajr") bringBack() else showShield(top)
       }
       handler.postDelayed(this, 1500)
     }
@@ -61,7 +65,9 @@ class PrayerGuardService : Service() {
 
     // Réveil Fajr : le son est joué ici, même si l'appli est fermée.
     if (kind == "fajr") AlarmSound.start(this)
-    bringBack()
+    // Au départ, seul le réveil Fajr passe devant tout. Pour la prière et le Focus, on attend
+    // qu'une appli mise en pause soit ouverte (la notification annonce le blocage).
+    if (kind == "fajr") bringBack()
     handler.removeCallbacks(tick)
     handler.postDelayed(tick, 1500)
     return START_STICKY
@@ -89,6 +95,34 @@ class PrayerGuardService : Service() {
     if (Settings.canDrawOverlays(this)) {
       try { startActivity(openIntent()) } catch (_: Exception) {}
     }
+  }
+
+  private var home: String? = null
+  private fun homePackage(): String? {
+    if (home == null) {
+      home = try {
+        packageManager.resolveActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), 0)?.activityInfo?.packageName
+      } catch (_: Exception) { null }
+    }
+    return home
+  }
+
+  private fun showShield(app: String) {
+    if (!Settings.canDrawOverlays(this)) return bringBack()
+    try {
+      startActivity(
+        Intent(this, ShieldActivity::class.java)
+          .putExtra(ShieldActivity.EXTRA_KIND, kind)
+          .putExtra(ShieldActivity.EXTRA_APP, app)
+          .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+      )
+    } catch (_: Exception) { return bringBack() }
+    // Filet de sécurité : si Android a refusé d'afficher l'écran (règles d'arrière-plan),
+    // l'appli bloquée est toujours devant : on ramène Noor Salat comme avant.
+    handler.postDelayed({
+      val now = topPackage(this) ?: return@postDelayed
+      if (now == app) bringBack()
+    }, 900)
   }
 
   private fun buildNotification(): Notification {
@@ -132,6 +166,10 @@ class PrayerGuardService : Service() {
     )
 
     private fun prefs(ctx: Context) = ctx.getSharedPreferences("noor_guard", Context.MODE_PRIVATE)
+
+    private const val KEY_BLOCKED = "blocked"
+    fun getBlocked(ctx: Context): Set<String> = prefs(ctx).getStringSet(KEY_BLOCKED, emptySet()) ?: emptySet()
+    fun setBlocked(ctx: Context, pkgs: Set<String>) { prefs(ctx).edit().putStringSet(KEY_BLOCKED, HashSet(pkgs)).apply() }
 
     fun isActive(ctx: Context) = prefs(ctx).getBoolean(KEY_ACTIVE, false)
     fun currentKind(ctx: Context): String? = if (isActive(ctx)) prefs(ctx).getString(KEY_KIND, null) else null

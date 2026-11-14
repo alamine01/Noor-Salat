@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Animated, Easing, FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PageHeader } from '../components/PageHeader';
 import { Label, T, Text, TextInput } from '../components/Text';
 import { Icon } from '../components/Icon';
@@ -14,6 +14,7 @@ import { ReadingPos, getReading } from '../lib/store';
 
 // Le texte est inclus dans l'appli (src/data/quran.json, généré depuis quran-json / tanzil.net) : hors ligne, jamais recopié à la main.
 export default function Coran() {
+  const insetBottom = useSafeAreaInsets().bottom;
   const [surahs, setSurahs] = useState<Surah[]>([]);
   const [err, setErr] = useState(false);
   const [q, setQ] = useState('');
@@ -46,7 +47,7 @@ export default function Coran() {
 
         {err && surahs.length === 0 && <T style={{ color: C.dim }}>Impossible d’afficher les sourates.</T>}
         {tab === 0 ? (
-          <FlatList data={list} keyExtractor={(s) => String(s.number)} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}
+          <FlatList data={list} keyExtractor={(s) => String(s.number)} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 + insetBottom }}
             ListEmptyComponent={surahs.length ? <T style={{ textAlign: 'center', color: C.dim, marginTop: 30 }}>Aucune sourate trouvée</T> : undefined}
             renderItem={({ item: s }) => (
               <Pressable onPress={() => open('surah', s.number)} style={({ pressed }) => [st.row, { opacity: pressed ? 0.7 : 1 }]} accessibilityRole="button">
@@ -59,7 +60,7 @@ export default function Coran() {
               </Pressable>
             )} />
         ) : (
-          <FlatList data={JUZ.map((j, i) => ({ n: i + 1, s: j[0], a: j[1] }))} keyExtractor={(j) => String(j.n)} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}
+          <FlatList data={JUZ.map((j, i) => ({ n: i + 1, s: j[0], a: j[1] }))} keyExtractor={(j) => String(j.n)} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 + insetBottom }}
             renderItem={({ item: j }) => {
               const sName = surahs.find((s) => s.number === j.s)?.englishName ?? `Sourate ${j.s}`;
               return (

@@ -13,6 +13,7 @@ import { FOCUS_PAUSES, blockingReady, canReallyBlock, resumeFocus, startFocus, s
 import { router } from 'expo-router';
 import { screenTimeStatus, selectionCount } from '../lib/ios';
 import { Tip, markGuide } from '../components/Guide';
+import { blockedAppsCount } from '../components/AndroidAppPicker';
 
 const PRESETS = [
   { label: '25 min', min: 25 },
@@ -109,12 +110,12 @@ export default function Focus() {
         <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
           <Icon name="lock" size={18} color={C.gold} stroke={1.8} />
           <T style={{ flex: 1, fontSize: 14 }}>
-            {canReallyBlock ? 'Toutes les applis sont mises en pause' : Platform.OS === 'ios' && blockingReady() ? 'Tes applis choisies sont mises en pause' : 'Minuteur de concentration'}
+            {canReallyBlock ? (blockedAppsCount() ? 'Tes applis choisies sont mises en pause' : 'Toutes les applis sont mises en pause') : Platform.OS === 'ios' && blockingReady() ? 'Tes applis choisies sont mises en pause' : 'Minuteur de concentration'}
           </T>
         </View>
         <T style={{ fontSize: 12, lineHeight: 18, color: C.dim, marginTop: 8 }}>
           {canReallyBlock
-            ? "Le téléphone et les appels d'urgence restent ouverts. Le choix des applis à bloquer arrive dans une prochaine version."
+            ? (blockedAppsCount() ? `${blockedAppsCount()} appli${blockedAppsCount() > 1 ? 's' : ''} en pause, choisies dans Réglages. Noor Salat, l'accueil et le téléphone restent libres.` : "Aucune appli choisie : tout est en pause sauf le téléphone et l'accueil. Choisis tes applis dans Réglages.")
             : Platform.OS === 'ios'
               ? blockingReady()
                 ? "Les mêmes applis qu'à l'heure de la prière (modifiables dans Réglages). 15 minutes minimum, règle d'Apple."

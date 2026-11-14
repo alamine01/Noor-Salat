@@ -4,6 +4,11 @@ import android.app.AlarmManager
 import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import android.util.Base64
+import java.io.ByteArrayOutputStream
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.PowerManager
@@ -15,6 +20,17 @@ import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 
 class NoorBlockerModule : Module() {
+  /** Icône d'appli en PNG base64 (72 px) pour la liste de choix. */
+  private fun iconData(d: Drawable): String? = try {
+    val size = 72
+    val bmp = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+    d.setBounds(0, 0, size, size)
+    d.draw(Canvas(bmp))
+    val out = ByteArrayOutputStream()
+    bmp.compress(Bitmap.CompressFormat.PNG, 100, out)
+    "data:image/png;base64," + Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP)
+  } catch (_: Exception) { null }
+
   private val ctx: Context
     get() = appContext.reactContext ?: throw IllegalStateException("No context")
 
@@ -122,5 +138,26 @@ class NoorBlockerModule : Module() {
     }
 
     Function("getForegroundApp") { PrayerGuardService.topPackage(ctx) }
+
+    // Choix des applis à mettre en pause (vide = toutes, sauf téléphone et urgences).
+    AsyncFunction("getLaunchableApps") {
+      val pm = ctx.packageManager
+      val launcher = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
+      val seen = HashSet<String>()
+      val apps = ArrayList<Map<String, Any?>>()
+      for (ri in pm.queryIntentActivities(launcher, 0)) {
+        val pkg = ri.activityInfo.packageName
+        if (pkg == ctx.packageName || !seen.add(pkg)) continue
+        apps.add(mapOf("package" to pkg, "label" to ri.loadLabel(pm).toString(), "icon" to iconData(ri.loadIcon(pm))))
+      }
+      apps.sortedBy { (it["label"] as String).lowercase() }
+    }
+
+    Function("setBlockedApps") { pkgs: List<String> -> PrayerGuardService.setBlocked(ctx, pkgs.toSet()) }
+
+    Function("getBlockedApps") { PrayerGuardService.getBlocked(ctx).toList() }
+
+    // Rappels de l'écran « appli en pause » (tirés au hasard par ShieldActivity).
+    Function("setShieldTexts") { priere: List<String>, focus: List<String> -> ShieldActivity.setTexts(ctx, priere, focus) }
   }
 }

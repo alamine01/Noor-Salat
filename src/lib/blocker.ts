@@ -1,3 +1,4 @@
+import { shieldTexts } from './rappels';
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { NoorBlocker } from '../../modules/noor-blocker';
@@ -260,6 +261,8 @@ export function cancelTodayBlock(prayer: PrayerKey) {
 }
 
 export async function setupNotifications() {
+  // Android : rappels de l'écran « appli en pause » (même liste que l'écran Apple sur iPhone).
+  try { NoorBlocker?.setShieldTexts?.(shieldTexts('priere'), shieldTexts('focus')); } catch {}
   if (Platform.OS === 'web') return;
   await Notifications.requestPermissionsAsync().catch(() => {});
   if (Platform.OS === 'android') {

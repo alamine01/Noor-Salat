@@ -7,7 +7,7 @@ import { Card, GhostButton, Row, StatusDot, Toggle } from './ui';
 import { C } from '../lib/theme';
 import { haptic } from '../lib/haptics';
 import {
-  ScreenTimeStatus, iosDiagnostic, saveSelection, savedSelection, loadSelection, alarmKitAuthorized, alarmKitAvailable, requestAlarmKit, requestScreenTime, screenTimeStatus, selectionCount,
+  ScreenTimeStatus, alarmsLog, iosDiagnostic, saveSelection, savedSelection, loadSelection, alarmKitAuthorized, alarmKitAvailable, requestAlarmKit, requestScreenTime, screenTimeStatus, selectionCount,
 } from '../lib/ios';
 import { testBlockNow } from '../lib/blocker';
 
@@ -76,8 +76,9 @@ export function IosBlocking({ block, onToggleBlock, onChanged }: { block: boolea
       <T onLongPress={() => {
         // Diagnostic caché (appui long) : ce que Temps d'écran a vraiment programmé et le dernier blocage.
         const d = iosDiagnostic();
-        Alert.alert('Diagnostic', [`Autorisation : ${d.status}`, `Éléments choisis : ${d.selection}`, `Bouclier actif : ${d.shieldActive ? 'oui' : 'non'}`,
-          `Dernier blocage : ${d.lastBlock}`, `Programmés (${d.activities}) :`, ...d.names].join('\n'));
+        alarmsLog().then((al) => Alert.alert('Diagnostic', [`Autorisation : ${d.status}`, `Éléments choisis : ${d.selection}`, `Bouclier actif : ${d.shieldActive ? 'oui' : 'non'}`,
+          `Dernier blocage : ${d.lastBlock}`, `Blocages programmés (${d.activities}) :`, ...d.names, '',
+          al ? `Réveils : ${al.ok} programmés, ${al.failed} refusés` : 'Réveils : aucun programmé', ...(al?.log ?? [])].join('\n')));
       }} style={{ fontSize: 12, lineHeight: 18, color: C.dim, marginTop: -6, marginHorizontal: 4 }}>
         Sur iPhone, les applis bloquées affichent un écran Apple « C'est l'heure de prier ». Son bouton t'envoie une notification qui ouvre Noor Salat.
       </T>

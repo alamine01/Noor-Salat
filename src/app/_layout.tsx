@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { AppState, Platform, View } from 'react-native';
-import { Stack, router } from 'expo-router';
+import { AppState, Linking, Platform, View } from 'react-native';
+import { Stack, router, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts, Inter_200ExtraLight, Inter_300Light, Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter';
 import { InstrumentSerif_400Regular, InstrumentSerif_400Regular_Italic } from '@expo-google-fonts/instrument-serif';
@@ -70,6 +70,35 @@ export default function Layout() {
     });
     return () => sub.remove();
   }, []);
+
+  // Android : quand le gardien ramène Noor Salat devant une appli bloquée, on affiche le bon écran
+  // (blocage ou réveil) et pas l'accueil. Sans toucher aux écrans du déblocage (scan, versets).
+  const pathname = usePathname();
+  useEffect(() => {
+    if (Platform.OS !== 'android' || !obDone) return;
+    const goGuarded = () => {
+      // Prière et réveil Fajr seulement : pendant une session Focus, Noor Salat reste libre (accueil, Coran, Dhikr…).
+      const kind = NoorBlocker?.pendingKind();
+      const target = kind === 'fajr' ? '/fajr-ring' : kind === 'block' ? '/block' : null;
+      if (!target) return;
+      const keep = [target, '/scan', '/versets', '/dispense'];
+      if (keep.some((p) => pathname === p || pathname.startsWith(p + '/'))) return;
+      router.navigate(target);
+    };
+    const sub = AppState.addEventListener('change', (st) => { if (st === 'active') goGuarded(); });
+    return () => sub.remove();
+  }, [pathname, obDone]);
+
+  // Android : « Je vais prier » / « Ouvrir Noor Salat » sur l'écran « appli en pause » ouvre le bon écran.
+  useEffect(() => {
+    if (Platform.OS !== 'android' || !obDone) return;
+    const sub = Linking.addEventListener('url', ({ url }) => {
+      if (url.includes('fajr-ring')) router.navigate('/fajr-ring');
+      else if (url.includes('block')) router.navigate('/block');
+      else if (url.includes('focus')) router.navigate('/focus');
+    });
+    return () => sub.remove();
+  }, [obDone]);
 
   const afterIntro = useCallback(() => {
     setIntro(false);

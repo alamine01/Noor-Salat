@@ -3,7 +3,7 @@ import { FlatList, View } from 'react-native';
 
 type ViewToken<T> = { item: T; index?: number | null };
 import { useLocalSearchParams } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PageHeader } from '../components/PageHeader';
 import { T, Text } from '../components/Text';
 import { Backdrop, Toggle } from '../components/ui';
@@ -15,6 +15,7 @@ type Ayah = { key: string; ar: string; fr: string; num: number; surah: string };
 
 /** Lecture d'une sourate ou d'un juz, avec la traduction en option. La position est gardée. */
 export default function Lecture() {
+  const insetBottom = useSafeAreaInsets().bottom;
   const { kind = 'surah', n = '1', ayah } = useLocalSearchParams<{ kind?: 'surah' | 'juz'; n?: string; ayah?: string }>();
   const [list, setList] = useState<Ayah[]>([]);
   const [title, setTitle] = useState('');
@@ -66,7 +67,7 @@ export default function Lecture() {
         {!err && !list.length && <T style={{ color: C.dim, marginTop: 20 }}>Chargement…</T>}
         <FlatList ref={ref} data={list} keyExtractor={(a) => a.key} onViewableItemsChanged={onView} viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
           onScrollToIndexFailed={(e) => setTimeout(() => ref.current?.scrollToOffset({ offset: e.averageItemLength * e.index, animated: false }), 100)}
-          contentContainerStyle={{ paddingBottom: 60 }} showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 60 + insetBottom }} showsVerticalScrollIndicator={false}
           renderItem={({ item: a, index }) => (
             <View style={{ paddingVertical: 18, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.06)', gap: 10 }}>
               {kind === 'juz' && a.num === 1 && index > 0 && <T style={{ fontSize: 11, letterSpacing: 2, color: C.gold, textAlign: 'center' }}>{a.surah.toUpperCase()}</T>}

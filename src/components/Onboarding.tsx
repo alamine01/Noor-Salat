@@ -8,6 +8,7 @@ import type { Gender } from '../lib/dispense';
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
 import { Ar, T, Text, TextInput } from './Text';
+import { AndroidAppPicker, androidPickerAvailable, blockedAppsCount } from './AndroidAppPicker';
 import { Icon } from './Icon';
 import { Backdrop, HoldButton, ND, Ripples, Rise, useBreath, useLoop } from './ui';
 import { C, F } from '../lib/theme';
@@ -510,11 +511,24 @@ function getPicker() {
 
 function Apps({ onNext }: { onNext: () => void }) {
   const [open, setOpen] = useState(false);
-  const [count, setCount] = useState(() => (isIOS ? selectionCount() : 0));
+  const [count, setCount] = useState(() => (isIOS ? selectionCount() : blockedAppsCount()));
   const PickerView = isIOS && screenTimeStatus() === 'approved' ? getPicker() : null;
+  const androidPick = !isIOS && canReallyBlock && androidPickerAvailable();
   return (
-    <Page kicker="À L'HEURE DE LA PRIÈRE" title="Qu'est-ce qu'on met en pause ?" sub="5 minutes après l'adhan, jusqu'au scan de ton tapis. Les appels restent toujours possibles." cta={count || !PickerView ? 'Activer' : 'Plus tard'} gold onNext={() => { scheduleDay().catch(() => {}); onNext(); }}>
-      {PickerView ? (
+    <Page kicker="À L'HEURE DE LA PRIÈRE" title="Qu'est-ce qu'on met en pause ?" sub="5 minutes après l'adhan, jusqu'au scan de ton tapis. Les appels restent toujours possibles." cta={count || (!PickerView && !androidPick) ? 'Activer' : 'Plus tard'} gold onNext={() => { scheduleDay().catch(() => {}); onNext(); }}>
+      {androidPick ? (
+        <Rise delay={250} style={{ marginTop: 26, gap: 14 }}>
+          <Pressable onPress={() => { haptic.tap(); setOpen(true); }} accessibilityRole="button" style={[st.planItem, { minHeight: 76 }, count > 0 && { borderColor: 'rgba(226,192,141,0.45)' }]}>
+            <View style={st.optIcon}><Icon name="lock" size={19} color={C.gold} stroke={1.8} /></View>
+            <View style={{ flex: 1 }}>
+              <T style={{ fontSize: 15 }}>{count ? `${count} appli${count > 1 ? 's' : ''} choisie${count > 1 ? 's' : ''}` : 'Choisir mes applis'}</T>
+              <T style={{ fontSize: 12, color: C.faint, marginTop: 2 }}>Les autres restent libres. Sans choix : toutes en pause.</T>
+            </View>
+            <Icon name="chevron" size={16} color={C.faint} />
+          </Pressable>
+          <AndroidAppPicker visible={open} onClose={(n) => { setOpen(false); setCount(n); }} />
+        </Rise>
+      ) : PickerView ? (
         <Rise delay={250} style={{ marginTop: 26, gap: 14 }}>
           <Pressable onPress={() => { haptic.tap(); setOpen(true); }} accessibilityRole="button" style={[st.planItem, { minHeight: 76 }, count > 0 && { borderColor: 'rgba(226,192,141,0.45)' }]}>
             <View style={st.optIcon}><Icon name="lock" size={19} color={C.gold} stroke={1.8} /></View>
