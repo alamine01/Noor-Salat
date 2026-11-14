@@ -132,9 +132,11 @@ export default function Compte() {
         <Section>Confidentialité</Section>
         <Card style={{ paddingVertical: 16, gap: 12 }}>
           <Label style={{ fontSize: 10 }}>Envoyé en ligne</Label>
-          <T style={{ fontSize: 13, lineHeight: 20, color: C.soft }}>Ton pseudo, la ville choisie, ton % Noor, tes séries et la liste des prières validées chaque jour (sans l'heure).</T>
+          <T style={{ fontSize: 13, lineHeight: 20, color: C.soft }}>Ton pseudo, la ville choisie, ton % Noor, tes séries, l'identifiant de ton QR de tapis et la liste des prières validées chaque jour (sans l'heure).</T>
+          <Label style={{ fontSize: 10, color: C.dim }}>Ta position</Label>
+          <T style={{ fontSize: 13, lineHeight: 20, color: C.soft }}>Envoyée à Aladhan pour calculer tes heures de prière et la Qibla. Elle n'est ni enregistrée, ni liée à ton compte.</T>
           <Label style={{ fontSize: 10, color: C.dim }}>Reste sur ton téléphone</Label>
-          <T style={{ fontSize: 13, lineHeight: 20, color: C.soft }}>Les heures de scan, ta position GPS, les photos de preuve, tes réglages.</T>
+          <T style={{ fontSize: 13, lineHeight: 20, color: C.soft }}>Les heures de scan, les photos de preuve, tes réglages.</T>
         </Card>
         <Card>
           <Row last={isGuest} title="Sauvegarde en ligne" sub={prefs?.sync ? 'Activée' : 'Coupée : rien n’est envoyé'}
